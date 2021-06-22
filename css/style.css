@@ -6,6 +6,11 @@ body {
     font-family: Arial, Helvetica, sans-serif;
 }
 
+.collapse {
+    /* overflow: hidden; */
+    max-height: 400px;
+}
+
 #map {
     margin-top: 10px;
     /* height: 300px;  */

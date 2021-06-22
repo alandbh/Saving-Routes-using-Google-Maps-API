@@ -28,6 +28,8 @@ if (window.localStorage.favDir) {
     favDir = JSON.parse(window.localStorage.favDir);
 }
 var listaFavoritos = document.querySelector('.lista-favoritos ul');
+var botaoParaOnde = document.querySelector('.para-onde');
+var containerLocais = document.querySelector('#containerLocais')
 
 
 /**
@@ -212,6 +214,26 @@ function alteraDestino(novoPlaceId) {
  * Favoritos
  */
 
+ var listaCollapse = new bootstrap.Collapse(listaFavoritos, {
+    toggle: false
+  })
+  listaCollapse.show();
+
+  var paraOndeCollapse = new bootstrap.Collapse(botaoParaOnde, {
+    toggle: false
+  })
+  paraOndeCollapse.show();
+
+  var containerLocaisCollapse = new bootstrap.Collapse(containerLocais, {
+    toggle: false
+  })
+  containerLocaisCollapse.hide();
+
+  botaoParaOnde.querySelector('button').addEventListener('click', ()=> {
+    containerLocaisCollapse.show();
+    paraOndeCollapse.hide()
+  })
+
 
  favButon.addEventListener("click", () => {
     // console.log("place", destinationPlace);
@@ -242,6 +264,10 @@ itensListaFavoritos.forEach((item)=> {
     item.addEventListener('click', (evento)=> {
         // console.log(item.id)
 
-        alteraDestino(item.id)
+        alteraDestino(item.id);
+        listaCollapse.hide();
     })
 })
+
+// var listaFavoritosId = document.getElementById('listaLocais')
+
