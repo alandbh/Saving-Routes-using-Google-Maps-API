@@ -1,11 +1,11 @@
 // Create the script tag, set the appropriate attributes
-var script = document.createElement("script");
+// var script = document.createElement("script");
 
-script.src = `https://maps.googleapis.com/maps/api/js?key=${API_KEY}&libraries=places&callback=initMap`;
-script.async = true;
+// script.src = `https://maps.googleapis.com/maps/api/js?key=${API_KEY}&libraries=places&callback=initMap`;
+// script.async = true;
 
-// Append the 'script' element to 'head'
-document.head.appendChild(script);
+// // Append the 'script' element to 'head'
+// document.head.appendChild(script);
 
 console.log('AMBIENTE', process.env.API_KEY);
 
