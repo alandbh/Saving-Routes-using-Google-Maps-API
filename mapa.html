@@ -22,56 +22,86 @@
         <link rel="stylesheet" href="css/style.css" />
     </head>
 
-    <body class="text-center">
+    <body>
         <main>
             <div class="container">
-                <div class="row">
+                <div class="row para-onde">
                     <div class="col-xs-12 my-3">
                         <button
                             class="btn btn-outline-success btn-block rounded"
+                            id="btn-para-onde"
                         >
                             Para onde vamos, <span>XXX</span>?
                         </button>
                     </div>
                 </div>
-                <div class="row">
-                    <div class="col-10">
-                        <div class="row my-2">
-                            <div class="col-12">
-                                <div class="searchboxs">
-                                    <input
-                                        id="origin-input"
-                                        class="form-control rounded"
-                                        type="text"
-                                        placeholder="Informe local de partida"
-                                    />
+                <div class="conainer-locais">
+                    <div class="row form-locais">
+                        <div class="col-10">
+                            <div class="row my-2">
+                                <div class="col-12">
+                                    <div class="searchboxs">
+                                        <input
+                                            id="origin-input"
+                                            class="form-control rounded"
+                                            type="text"
+                                            placeholder="Informe local de partida"
+                                        />
+                                    </div>
+                                </div>
+                            </div>
+    
+                            <div class="row my-2">
+                                <div class="col-12">
+                                    <div class="searchboxs">
+                                        <input
+                                            id="destination-input"
+                                            class="form-control rounded"
+                                            type="text"
+                                            placeholder="Informe seu destino"
+                                        />
+                                    </div>
                                 </div>
                             </div>
                         </div>
-
-                        <div class="row my-2">
-                            <div class="col-12">
-                                <div class="searchboxs">
-                                    <input
-                                        id="destination-input"
-                                        class="form-control rounded"
-                                        type="text"
-                                        placeholder="Informe seu destino"
-                                    />
-                                </div>
+                        <div class="col-2 align-middle d-flex">
+                            <div class="align-middle d-flex">
+                                <button disabled class="btn" id="favoritar">
+                                    <i
+                                        class="bi bi-heart display-6 text-success"
+                                    ></i>
+                                </button>
                             </div>
                         </div>
-                    </div>
-                    <div class="col-2 align-middle d-flex">
-                        <div class="align-middle d-flex">
-                            <button disabled class="btn" id="favoritar">
-                                <i
-                                    class="bi bi-heart display-6 text-success"
-                                ></i>
-                            </button>
+                    </div> <!-- form-locais -->
+                    <div class="row lista-favoritos">
+                        <div class="col-12 col-md-6">
+                            <p class="text-uppercase my-3 fs-6 fw-lighter">Locais favoritos</p>
+                            <ul class="list-group">
+                                <li class="list-group-item" id="ChIJAz0eA-KZpgARYAFkjcWmbI4">
+                                    <i class="bi bi-geo-alt me-2"></i>
+                                    <span>NOME AQUI</span>
+                                </li>
+                                <li class="list-group-item" id="11111">
+                                    <i class="bi bi-geo-alt me-2"></i>
+                                    <span>NOME AQUI</span>
+                                </li>
+                                <li class="list-group-item" id="22222">
+                                    <i class="bi bi-geo-alt me-2"></i>
+                                    <span>NOME AQUI</span>
+                                </li>
+                                <li class="list-group-item" id="33333">
+                                    <i class="bi bi-geo-alt me-2"></i>
+                                    <span>NOME AQUI</span>
+                                </li>
+                                <li class="list-group-item" id="4444">
+                                    <i class="bi bi-geo-alt me-2"></i>
+                                    <span>NOME AQUI</span>
+                                </li>
+                            </ul>
                         </div>
                     </div>
-                </div>
+                </div><!-- container-locais -->
             </div>
             <div class="mapa">
                 <div id="map"></div>

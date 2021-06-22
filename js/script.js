@@ -183,7 +183,7 @@ favButon.addEventListener("click", () => {
 });
 function favoritar() {}
 
-function novoDestino() {
+function alteraDestino(novoPlaceId) {
     var novoEndereco =
         "Av. Augusto de Lima, 744 - Centro, Belo Horizonte - MG, 30190-922, Brazil";
     var destinationPlaceId = "ChIJAz0eA-KZpgARYAFkjcWmbI4";
@@ -193,7 +193,7 @@ function novoDestino() {
 
     var parametros = {
         origin: { placeId: originPlaceId },
-        destination: { placeId: "ChIJAz0eA-KZpgARYAFkjcWmbI4" },
+        destination: { placeId: novoPlaceId },
         travelMode: "BICYCLING",
     };
 
@@ -210,3 +210,19 @@ function novoDestino() {
 
     directionsService.route(parametros, aplicaDirecao);
 }
+
+
+/**
+ * 
+ * Favoritos
+ */
+
+var itensListaFavoritos = document.querySelectorAll('.lista-favoritos li');
+
+itensListaFavoritos.forEach((item)=> {
+    item.addEventListener('click', (evento)=> {
+        // console.log(item.id)
+
+        alteraDestino(item.id)
+    })
+})
