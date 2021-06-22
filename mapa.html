@@ -23,36 +23,52 @@
     </head>
 
     <body class="text-center">
-        <main class="form-signin">
+        <main>
             <div class="container">
-                <div class="col-md-6">
-                    <div class="row">
-                        <div class="col-md-12">
-                            <div class="searchboxs">
-                                <input
-                                    id="origin-input"
-                                    class="form-control col-md-12"
-                                    type="text"
-                                    placeholder="Informe local de partida"
-                                />
+                <div class="row">
+                    <div class="col-xs-12 my-3">
+                        <button
+                            class="btn btn-outline-success btn-block rounded"
+                        >
+                            Para onde vamos, <span>XXX</span>?
+                        </button>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-10">
+                        <div class="row my-2">
+                            <div class="col-12">
+                                <div class="searchboxs">
+                                    <input
+                                        id="origin-input"
+                                        class="form-control rounded"
+                                        type="text"
+                                        placeholder="Informe local de partida"
+                                    />
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="row my-2">
+                            <div class="col-12">
+                                <div class="searchboxs">
+                                    <input
+                                        id="destination-input"
+                                        class="form-control rounded"
+                                        type="text"
+                                        placeholder="Informe seu destino"
+                                    />
+                                </div>
                             </div>
                         </div>
                     </div>
-                    <div class="row">
-                        <div class="col-md-12">
-                            <div class="searchboxs">
-                                <input
-                                    id="destination-input"
-                                    class="form-control col-md-12"
-                                    type="text"
-                                    placeholder="Informe seu destino"
-                                />
-                            </div>
-                        </div>
-                    </div>
-                    <div class="row">
-                        <div class="col-md-12">
-                            <button disabled id="favoritar">Salvar</button>
+                    <div class="col-2 align-middle d-flex">
+                        <div class="align-middle d-flex">
+                            <button disabled class="btn" id="favoritar">
+                                <i
+                                    class="bi bi-heart display-6 text-success"
+                                ></i>
+                            </button>
                         </div>
                     </div>
                 </div>
