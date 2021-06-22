@@ -263,6 +263,7 @@ function montaLista() {
             `;
     
             listaFavoritos.innerHTML += listaHtml;
+            escutaClick()
         })
     }
 
@@ -270,17 +271,21 @@ function montaLista() {
 
 montaLista()
 
-
-var itensListaFavoritos = document.querySelectorAll('.lista-favoritos li');
-
-itensListaFavoritos.forEach((item)=> {
-    item.querySelector('button').addEventListener('click', (evento)=> {
-        // console.log(item.id)
-
-        alteraDestino(item.id);
-        listaCollapse.hide();
+function escutaClick() {
+    var itensListaFavoritos = document.querySelectorAll('.lista-favoritos li');
+    
+    itensListaFavoritos.forEach((item)=> {
+        item.querySelector('button').addEventListener('click', (evento)=> {
+            // console.log(item.id)
+    
+            alteraDestino(item.id);
+            listaCollapse.hide();
+        })
     })
-})
+
+}
+
+escutaClick()
 
 // var listaFavoritosId = document.getElementById('listaLocais')
 
