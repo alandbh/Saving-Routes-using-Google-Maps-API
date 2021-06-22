@@ -181,12 +181,12 @@ AutocompleteDirectionsHandler.prototype.route = function () {
 
 
 function alteraDestino(novoPlaceId) {
-    var novoEndereco =
-        "Av. Augusto de Lima, 744 - Centro, Belo Horizonte - MG, 30190-922, Brazil";
-    var destinationPlaceId = "ChIJAz0eA-KZpgARYAFkjcWmbI4";
-    var campoDestino = document.querySelector("#destination-input");
+    // var novoEndereco =
+    //     "Av. Augusto de Lima, 744 - Centro, Belo Horizonte - MG, 30190-922, Brazil";
+    // var destinationPlaceId = "ChIJAz0eA-KZpgARYAFkjcWmbI4";
+    // var campoDestino = document.querySelector("#destination-input");
 
-    campoDestino.value = novoEndereco;
+    // campoDestino.value = novoEndereco;
 
     var parametros = {
         origin: { placeId: originPlaceId },
@@ -213,6 +213,10 @@ function alteraDestino(novoPlaceId) {
  * 
  * Favoritos
  */
+
+ destinationInput.addEventListener('click', ()=>{
+     destinationInput.value = ''
+ })
 
  var listaCollapse = new bootstrap.Collapse(listaFavoritos, {
     toggle: false
@@ -241,27 +245,35 @@ function alteraDestino(novoPlaceId) {
     window.localStorage.favDir = JSON.stringify(favDir);
     favButon.disabled = true;
     // place = null;
+    montaLista();
 });
 
-if (favDir.length > 0) {
-    favDir.forEach((fav)=> {
-        var listaHtml = `
-        <li class="list-group-item" id="${fav.place_id}">
-            <div class="d-flex">
-                <i class="bi bi-geo-alt me-2"></i>
-                <span class="d-inline-block text-truncate">${fav.name}</span>
-            <div>
-        </li>
-        `;
+function montaLista() {
+    listaFavoritos.innerHTML = '';
+    if (favDir.length > 0) {
+        favDir.forEach((fav)=> {
+            var listaHtml = `
+            <li class="list-group-item" id="${fav.place_id}">
+                <button class="d-flex">
+                    <i class="bi bi-geo-alt me-2"></i>
+                    <span class="d-inline-block text-truncate">${fav.name}</span>
+                </button>
+            </li>
+            `;
+    
+            listaFavoritos.innerHTML += listaHtml;
+        })
+    }
 
-        listaFavoritos.innerHTML += listaHtml;
-    })
 }
+
+montaLista()
+
 
 var itensListaFavoritos = document.querySelectorAll('.lista-favoritos li');
 
 itensListaFavoritos.forEach((item)=> {
-    item.addEventListener('click', (evento)=> {
+    item.querySelector('button').addEventListener('click', (evento)=> {
         // console.log(item.id)
 
         alteraDestino(item.id);
