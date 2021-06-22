@@ -7,6 +7,8 @@ script.async = true;
 // Append the 'script' element to 'head'
 document.head.appendChild(script);
 
+console.log('AMBIENTE', process.env.API_KEY);
+
 var infowindow;
 /**
  * Variáveis globais
