@@ -1,0 +1,1 @@
+var listaUsuarios = JSON.parse(window.localStorage.usuarios);
