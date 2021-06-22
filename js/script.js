@@ -24,6 +24,11 @@ var favButon = document.querySelector("#favoritar");
 var directionsService;
 var directionsDisplay;
 var favDir = [];
+if (window.localStorage.favDir) {
+    favDir = JSON.parse(window.localStorage.favDir);
+}
+var listaFavoritos = document.querySelector('.lista-favoritos ul');
+
 
 /**
  *
@@ -171,17 +176,7 @@ AutocompleteDirectionsHandler.prototype.route = function () {
     );
 };
 
-favButon.addEventListener("click", () => {
-    console.log("place", destinationPlace);
-    if (window.localStorage.favDir) {
-        favDir = JSON.parse(window.localStorage.favDir);
-    }
-    favDir.push(destinationPlace);
-    window.localStorage.favDir = JSON.stringify(favDir);
-    favButon.disabled = true;
-    // place = null;
-});
-function favoritar() {}
+
 
 function alteraDestino(novoPlaceId) {
     var novoEndereco =
@@ -216,6 +211,30 @@ function alteraDestino(novoPlaceId) {
  * 
  * Favoritos
  */
+
+
+ favButon.addEventListener("click", () => {
+    // console.log("place", destinationPlace);
+    favDir.push(destinationPlace);
+    window.localStorage.favDir = JSON.stringify(favDir);
+    favButon.disabled = true;
+    // place = null;
+});
+
+if (favDir.length > 0) {
+    favDir.forEach((fav)=> {
+        var listaHtml = `
+        <li class="list-group-item" id="${fav.place_id}">
+            <div class="d-flex">
+                <i class="bi bi-geo-alt me-2"></i>
+                <span class="d-inline-block text-truncate">${fav.name}</span>
+            <div>
+        </li>
+        `;
+
+        listaFavoritos.innerHTML += listaHtml;
+    })
+}
 
 var itensListaFavoritos = document.querySelectorAll('.lista-favoritos li');
 
