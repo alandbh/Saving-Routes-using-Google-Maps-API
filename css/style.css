@@ -83,6 +83,10 @@ ul#listaLocais {
 
 ul#listaLocais li {
     cursor: pointer;
+    justify-content: space-between;
+}
+ul#listaLocais li.list-group-item  {
+    padding: 10px;
 }
 ul#listaLocais li:hover {
     background: #f1f1f1;
@@ -91,8 +95,17 @@ ul#listaLocais li:hover {
 ul#listaLocais li button {
     background: transparent;
     border: none;
-    width: 100%;
     padding: 0;
+    align-items: center;
+}
+ul#listaLocais li .btn-rota {
+    width: calc(100% - 60px);
+}
+ul#listaLocais li .btn-deleta {
+    width: 40px;
+    height: 40px;
+    justify-content: center;
+    
 }
 
 .btn.favoritos {

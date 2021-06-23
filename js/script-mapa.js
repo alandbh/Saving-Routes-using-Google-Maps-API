@@ -331,10 +331,13 @@ function montaLista() {
     if (usuarioLogado.favDir.length > 0) {
         usuarioLogado.favDir.forEach((fav)=> {
             var listaHtml = `
-            <li class="list-group-item" id="${fav.place_id}">
-                <button class="d-flex">
+            <li class="list-group-item d-flex" id="${fav.place_id}">
+                <button class="d-flex btn-rota">
                     <i class="bi bi-geo-alt me-2"></i>
                     <span class="d-inline-block text-truncate">${fav.novoNome}</span>
+                </button>
+                <button class="d-flex btn-deleta text-danger">
+                    <i class="bi bi-x-circle"></i>
                 </button>
             </li>
             `;
