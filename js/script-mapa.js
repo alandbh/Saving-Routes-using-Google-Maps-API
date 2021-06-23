@@ -42,7 +42,7 @@ var directionsService;
 var directionsDisplay;
 usuarioLogado.favDir = [];
 if (window.localStorage.usuarioLogado) {
-    usuarioLogado.favDir = JSON.parse(window.localStorage.usuarioLogado);
+    usuarioLogado = JSON.parse(window.localStorage.usuarioLogado);
 }
 var listaFavoritos = document.querySelector('.lista-favoritos ul');
 var botaoParaOnde = document.querySelector('.para-onde');
