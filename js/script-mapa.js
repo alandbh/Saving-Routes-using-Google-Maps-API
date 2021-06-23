@@ -57,6 +57,7 @@ var modalFavoritar = document.querySelector('.modal-favoritar');
 var modalFavoritarObj = new bootstrap.Modal(modalFavoritar, {});
 
 var btnSalvarRota = modalFavoritar.querySelector('#btn-salvar');
+var btnDeletaRota = modalFavoritar.querySelectorAll('.btn-deleta');
 
 function getUniqueBy(arr, key) {
     return [...new Map(arr.map(item => [item[key], item])).values()]
@@ -321,10 +322,25 @@ function gravaRota() {
     window.localStorage.usuarios = JSON.stringify(listaUsuarios);
 
     montaLista();
-
-   
-
 }
+
+function deletaRota(placeId) {
+
+    var novoFavDir = usuarioLogado.favDir.filter((item)=> item.place_id !== placeId)
+
+    usuarioLogado.favDir = novoFavDir;
+    window.localStorage.usuarioLogado = JSON.stringify(usuarioLogado);
+    // // place = null;
+    listaUsuarios.forEach((item)=> {if (item.email === usuarioLogado.email) {
+        // console.log(item)
+        item.favDir = usuarioLogado.favDir
+    }});
+    window.localStorage.usuarios = JSON.stringify(listaUsuarios);
+
+    montaLista();
+}
+
+
 
 function montaLista() {
     listaFavoritos.innerHTML = '';
@@ -344,9 +360,10 @@ function montaLista() {
     
             listaFavoritos.innerHTML += listaHtml;
             listaCollapse.show();
-            escutaClick()
+            escutaClick();
         })
     }
+
 
 }
 
@@ -354,6 +371,8 @@ montaLista()
 
 function escutaClick() {
     var itensListaFavoritos = document.querySelectorAll('#listaLocais li');
+    btnDeletaRota = document.querySelectorAll('.btn-deleta');
+
 
     if (itensListaFavoritos) {
         
@@ -366,6 +385,14 @@ function escutaClick() {
             })
         })
     }
+
+    btnDeletaRota.forEach((btn) => {
+        btn.addEventListener('click', ()=>{
+            let placeIdToRemove = btn.parentNode.id;
+            // console.log(placeIdToRemove);
+            deletaRota(placeIdToRemove);
+        })
+    });
     
 
 }
