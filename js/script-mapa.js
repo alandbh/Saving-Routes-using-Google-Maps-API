@@ -44,7 +44,7 @@ var directionsDisplay;
 if (window.localStorage.usuarioLogado) {
     usuarioLogado = JSON.parse(window.localStorage.usuarioLogado);
 }
-var listaFavoritos = document.querySelector('.lista-favoritos ul');
+var listaFavoritos = document.querySelector('ul#listaLocais');
 var botaoParaOnde = document.querySelector('.para-onde');
 var containerLocais = document.querySelector('#containerLocais')
 
@@ -252,7 +252,8 @@ function alteraDestino(novoPlaceId) {
 
   botaoParaOnde.querySelector('button').addEventListener('click', ()=> {
     containerLocaisCollapse.show();
-    paraOndeCollapse.hide()
+    paraOndeCollapse.hide();
+    document.querySelector('body').classList.add('form-open')
   })
 
   /**
@@ -321,3 +322,4 @@ escutaClick()
 
 // var listaFavoritosId = document.getElementById('listaLocais')
 
+var modalFavoritos = new bootstrap.Modal(document.querySelector('.modal-favoritos'), {})

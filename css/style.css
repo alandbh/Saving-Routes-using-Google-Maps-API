@@ -53,8 +53,12 @@ body {
 
 .mapa {
     width: 100%;
-    height: 100%;
-    position: absolute;
+    height: calc(100vh - 66px);
+}
+
+body.form-open .mapa {
+    height: calc(100vh - 100px);
+
 }
 
 body {
@@ -73,21 +77,35 @@ body {
     Lista de Favoritos
 */
 
-.lista-favoritos ul {
-    max-height: 200px;
-    overflow-y: auto;
+ul#listaLocais {
+    
 }
 
-.lista-favoritos li {
+ul#listaLocais li {
     cursor: pointer;
 }
-.lista-favoritos li:hover {
+ul#listaLocais li:hover {
     background: #f1f1f1;
 }
 
-.lista-favoritos li button {
+ul#listaLocais li button {
     background: transparent;
     border: none;
     width: 100%;
     padding: 0;
+}
+
+.btn.favoritos {
+    position: fixed;
+    bottom: 10%;
+    left: 20px;
+    background: green;
+    border-radius: 30px;
+    width: 60px;
+    height: 60px;
+}
+
+.btn.favoritos i {
+    color: #fff;
+    font-size: 26px;
 }
