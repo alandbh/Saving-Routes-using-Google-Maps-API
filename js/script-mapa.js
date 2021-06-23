@@ -47,7 +47,20 @@ if (window.localStorage.usuarioLogado) {
 var listaFavoritos = document.querySelector('ul#listaLocais');
 var botaoParaOnde = document.querySelector('.para-onde');
 var containerLocais = document.querySelector('#containerLocais')
+var detalhesRota;
 
+var modalFavoritos = document.querySelector('.modal-favoritos');
+var modalFavoritosObj = new bootstrap.Modal(modalFavoritos, {});
+
+var modalFavoritar = document.querySelector('.modal-favoritar');
+
+var modalFavoritarObj = new bootstrap.Modal(modalFavoritar, {});
+
+var btnSalvarRota = modalFavoritar.querySelector('#btn-salvar');
+
+function getUniqueBy(arr, key) {
+    return [...new Map(arr.map(item => [item[key], item])).values()]
+}
 
 /**
  *
@@ -186,6 +199,7 @@ AutocompleteDirectionsHandler.prototype.route = function () {
                 console.log(response.routes[0].legs[0].end_location.lat());
                 console.log(response.routes[0].legs[0].end_location.lng());
                 console.log(response.routes[0].legs[0]);
+                detalhesRota = response.routes[0].legs[0];
 
                 // favoritar();
             } else {
@@ -228,54 +242,89 @@ function alteraDestino(novoPlaceId) {
 
 /**
  * 
- * Favoritos
+ * Tela inicial
  */
 
- destinationInput.addEventListener('click', ()=>{
-     destinationInput.value = ''
- })
+    destinationInput.addEventListener('click', ()=>{
+        destinationInput.value = ''
+    })
 
- var listaCollapse = new bootstrap.Collapse(listaFavoritos, {
-    toggle: false
-  })
-  listaCollapse.show();
+    var listaCollapse = new bootstrap.Collapse(listaFavoritos, {
+        toggle: false
+    })
+    listaCollapse.show();
 
-  var paraOndeCollapse = new bootstrap.Collapse(botaoParaOnde, {
-    toggle: false
-  })
-  paraOndeCollapse.show();
+    var paraOndeCollapse = new bootstrap.Collapse(botaoParaOnde, {
+        toggle: false
+    })
+    paraOndeCollapse.show();
 
-  var containerLocaisCollapse = new bootstrap.Collapse(containerLocais, {
-    toggle: false
-  })
-  containerLocaisCollapse.hide();
+    var containerLocaisCollapse = new bootstrap.Collapse(containerLocais, {
+        toggle: false
+    })
+    containerLocaisCollapse.hide();
 
-  botaoParaOnde.querySelector('button').addEventListener('click', ()=> {
-    containerLocaisCollapse.show();
-    paraOndeCollapse.hide();
-    document.querySelector('body').classList.add('form-open')
-  })
+    botaoParaOnde.querySelector('button').addEventListener('click', ()=> {
+        containerLocaisCollapse.show();
+        paraOndeCollapse.hide();
+        document.querySelector('body').classList.add('form-open')
+    })
 
   /**
+   * 
    * 
    * Favoritando a rota
    */
 
  favButon.addEventListener("click", () => {
-    // console.log("place", destinationPlace);
+  
+
+    
+
+
+    // Abre a modal
+    modalFavoritarObj.show();
+    modalFavoritar.addEventListener('shown.bs.modal', function () {
+
+        console.log('abre modal');
+        modalFavoritar.querySelector('#nome-rota').focus()
+        modalFavoritar.querySelector('#nome-rota').value = detalhesRota.end_address;
+
+       
+    })
+
+
+});
+
+btnSalvarRota.addEventListener('click', ()=> {
+    var novoNome = modalFavoritar.querySelector('#nome-rota').value;
+    destinationPlace.novoNome = novoNome;
+
+    gravaRota();
+
+    modalFavoritarObj.hide();
+})
+
+
+function gravaRota() {
+
+    console.log(destinationPlace);
+
     usuarioLogado.favDir.push(destinationPlace);
-    console.log('logado', usuarioLogado)
     window.localStorage.usuarioLogado = JSON.stringify(usuarioLogado);
     favButon.disabled = true;
-    // place = null;
+    // // place = null;
     listaUsuarios.forEach((item)=> {if (item.email === usuarioLogado.email) {
-        console.log(item)
+        // console.log(item)
         item.favDir = usuarioLogado.favDir
     }});
     window.localStorage.usuarios = JSON.stringify(listaUsuarios);
 
     montaLista();
-});
+
+   
+
+}
 
 function montaLista() {
     listaFavoritos.innerHTML = '';
@@ -285,7 +334,7 @@ function montaLista() {
             <li class="list-group-item" id="${fav.place_id}">
                 <button class="d-flex">
                     <i class="bi bi-geo-alt me-2"></i>
-                    <span class="d-inline-block text-truncate">${fav.name}</span>
+                    <span class="d-inline-block text-truncate">${fav.novoNome}</span>
                 </button>
             </li>
             `;
@@ -310,7 +359,7 @@ function escutaClick() {
                 // console.log(item.id)
         
                 alteraDestino(item.id);
-                listaCollapse.hide();
+                modalFavoritosObj.hide();
             })
         })
     }
@@ -322,4 +371,4 @@ escutaClick()
 
 // var listaFavoritosId = document.getElementById('listaLocais')
 
-var modalFavoritos = new bootstrap.Modal(document.querySelector('.modal-favoritos'), {})
+
