@@ -1,4 +1,14 @@
 // Create the script tag, set the appropriate attributes
+var listaUsuarios = JSON.parse(window.localStorage.usuarios);
+let usuarioLogado = listaUsuarios.find((item)=>item.email === window.sessionStorage.usuarioLogado) || null;
+
+if (!usuarioLogado) {
+    window.open("/index.html","_self")
+}
+
+var domNome = document.querySelector("#btn-para-onde b");
+domNome.textContent = usuarioLogado.nome.split(' ')[0];
+
 var script = document.createElement("script");
 
 script.src = `https://maps.googleapis.com/maps/api/js?key=${API_KEY}&libraries=places&callback=initMap`;

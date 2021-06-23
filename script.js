@@ -1,6 +1,7 @@
 window.usuarios = [];
 var usuario = {};
 var formValid = false;
+var listaUsuarios = JSON.parse(window.localStorage.usuarios) || [];
 
 window.addEventListener("load", function () {
     let nome = document.getElementById("nameRegistro");
@@ -15,11 +16,6 @@ window.addEventListener("load", function () {
     salvar.disabled = true;
 
     salvar.addEventListener("click", function () {
-        let input1 = nome.value;
-        let input2 = date.value;
-        let input3 = tel.value;
-        let input4 = ema.value;
-        let input5 = password.value;
 
         usuario.nome = nome.value;
         usuario.data = date.value;
@@ -28,17 +24,22 @@ window.addEventListener("load", function () {
         usuario.senha = password.value;
 
         if (validarCampos()) {
-            usuarios.push(usuario);
-            window.localStorage.setItem('usuarios', JSON.stringify(usuarios));
+            if (usuarioJaExiste()) {
+                alert('Este email já está sendo usado');
+                return;
+            }
+            listaUsuarios.push(usuario);
+            window.localStorage.setItem('usuarios', JSON.stringify(listaUsuarios));
+            window.open("/index.html","_self")
         } else {
             alert("Preencha todos os campos");
         }
 
-        window.localStorage.setItem("nome", JSON.stringify(input1));
-        window.localStorage.setItem("data", JSON.stringify(input2));
-        window.localStorage.setItem("telefone", JSON.stringify(input3));
-        window.localStorage.setItem("email", JSON.stringify(input4));
-        window.localStorage.setItem("senha", JSON.stringify(input5));
+        // window.localStorage.setItem("nome", JSON.stringify(input1));
+        // window.localStorage.setItem("data", JSON.stringify(input2));
+        // window.localStorage.setItem("telefone", JSON.stringify(input3));
+        // window.localStorage.setItem("email", JSON.stringify(input4));
+        // window.localStorage.setItem("senha", JSON.stringify(input5));
     });
 
     formulario.onchange = (evento) => validarCampos(evento);
@@ -57,6 +58,13 @@ window.addEventListener("load", function () {
             console.log("nome", ema.value);
             salvar.disabled = true;
         }
+    }
+
+    function usuarioJaExiste() {
+        if (listaUsuarios !== null) {
+            return Boolean(listaUsuarios.find((usuario)=> usuario.email === ema.value)    )
+        }
+        return false
     }
 });
 

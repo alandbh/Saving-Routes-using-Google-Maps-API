@@ -23,6 +23,7 @@ window.addEventListener("load", function () {
         if (usuarioRegistrado && usuarioRegistrado.senha === senha) {
             console.log('ok');
             usuarioLogado = usuarioRegistrado;
+            window.sessionStorage.usuarioLogado = login;
             window.open("/mapa.html","_self")
         } else {
             erroTemplate.innerHTML = '<small class="text-danger">Senha incorreta<small>';
