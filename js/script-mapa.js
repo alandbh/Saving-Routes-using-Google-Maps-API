@@ -344,7 +344,11 @@ function deletaRota(placeId) {
 
 function montaLista() {
     listaFavoritos.innerHTML = '';
+    var btnFavoritos = document.querySelector(".btn.favoritos");
+    btnFavoritos.disabled = true;
+    modalFavoritarObj.hide();
     if (usuarioLogado.favDir.length > 0) {
+        btnFavoritos.disabled = false;
         usuarioLogado.favDir.forEach((fav)=> {
             var listaHtml = `
             <li class="list-group-item d-flex" id="${fav.place_id}">
