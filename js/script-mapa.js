@@ -40,10 +40,10 @@ var destinationInput = document.getElementById("destination-input");
 var favButon = document.querySelector("#favoritar");
 var directionsService;
 var directionsDisplay;
-// usuarioLogado.favDir = [];
-// if (window.localStorage.usuarioLogado.favDir) {
-//     usuarioLogado.favDir = JSON.parse(window.localStorage.usuarioLogado.favDir);
-// }
+usuarioLogado.favDir = [];
+if (window.localStorage.usuarioLogado) {
+    usuarioLogado.favDir = JSON.parse(window.localStorage.usuarioLogado);
+}
 var listaFavoritos = document.querySelector('.lista-favoritos ul');
 var botaoParaOnde = document.querySelector('.para-onde');
 var containerLocais = document.querySelector('#containerLocais')
