@@ -121,8 +121,20 @@
                 <div id="map"></div>
             </div>
 
+            <!--
+                ******
+
+                Botoes de favoritos e de detalhes da rota  
+
+                *****
+            -->
+
             <button class="btn favoritos" disabled data-bs-toggle="modal" data-bs-target=".modal-favoritos">
                 <i class="bi bi-bookmark-heart"></i>
+            </button>
+            
+            <button class="btn detalhes-rota" disabled data-bs-toggle="modal" data-bs-target=".modal-detalhes-rota">
+                <i class="bi bi-map"></i>
             </button>
 
             <div class="modal fade modal-favoritos" tabindex="-1" aria-labelledby="modal-favoritos" aria-hidden="true">
@@ -157,6 +169,54 @@
                       <div class="modal-footer">
                         <button type="button" id="btn-cancelar" class="btn" data-bs-dismiss="modal">Cancelar</button>
                         <button type="button" id="btn-salvar" class="btn btn-success">Salvar</button>
+                      </div>
+                    </div>
+                  </div>
+            </div>
+
+            <div class="modal fade modal-detalhes-rota" tabindex="-1" aria-labelledby="modal-detalhes-rota" aria-hidden="true">
+                <div class="modal-dialog">
+                    <div class="modal-content">
+                      <div class="modal-header">
+                        <h5 class="modal-title" id="exampleModalLabel">Detalhes da rota</h5>
+                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                      </div>
+                      <div class="modal-body">
+                        <ul class="list-group my-2" id="listaDetalhes">
+                            <li class="list-group-item d-flex align-items-center" id="duracao">
+                                <i class="bi fs-3 bi-stopwatch me-2"></i>
+                                <span class="d-flex flex-grow-1 align-items-center justify-content-between">
+                                    <small>
+                                        Duração:
+                                    </small>
+                                    <b class="fs-2">
+                                        23 min
+                                    </b>
+                                </span>
+                            </li>
+                            <li class="list-group-item d-flex align-items-center" id="distancia">
+                                <i class="bi fs-3 bi-speedometer2 me-2"></i>
+                                <span class="d-flex flex-grow-1 align-items-center justify-content-between">
+                                    <small>
+                                        Distância:
+                                    </small>
+                                    <b class="fs-2">
+                                        23 km
+                                    </b>
+                                </span>
+                            </li>
+                            <li class="list-group-item d-flex align-items-center" id="calorias">
+                                <i class="bi fs-3 bi-lightning-charge me-2"></i>
+                                <span class="d-flex flex-grow-1 align-items-center justify-content-between">
+                                    <small>
+                                        Calorias:
+                                    </small>
+                                    <b class="fs-2">
+                                        23 km
+                                    </b>
+                                </span>
+                            </li>
+                        </ul>
                       </div>
                     </div>
                   </div>

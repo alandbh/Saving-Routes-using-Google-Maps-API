@@ -59,6 +59,8 @@ var modalFavoritarObj = new bootstrap.Modal(modalFavoritar, {});
 var btnSalvarRota = modalFavoritar.querySelector('#btn-salvar');
 var btnDeletaRota = modalFavoritar.querySelectorAll('.btn-deleta');
 
+var btnDetalhesRota = document.querySelector('.btn.detalhes-rota');
+
 function getUniqueBy(arr, key) {
     return [...new Map(arr.map(item => [item[key], item])).values()]
 }
@@ -201,6 +203,7 @@ AutocompleteDirectionsHandler.prototype.route = function () {
                 console.log(response.routes[0].legs[0].end_location.lng());
                 console.log(response.routes[0].legs[0]);
                 detalhesRota = response.routes[0].legs[0];
+                preencheDetalhes();
 
                 // favoritar();
             } else {
@@ -230,6 +233,9 @@ function alteraDestino(novoPlaceId) {
         if (status === "OK") {
             directionsDisplay.setDirections(response);
             console.log(response);
+            detalhesRota = response.routes[0].legs[0];
+            btnDetalhesRota.disabled = false;
+            preencheDetalhes();
         } else {
             window.alert("Directions request failed due to " + status);
         }
@@ -351,7 +357,7 @@ function montaLista() {
         btnFavoritos.disabled = false;
         usuarioLogado.favDir.forEach((fav)=> {
             var listaHtml = `
-            <li class="list-group-item d-flex" id="${fav.place_id}">
+            <li class="list-group-item d-flex justify-content-between" id="${fav.place_id}">
                 <button class="d-flex btn-rota">
                     <i class="bi bi-geo-alt me-2"></i>
                     <span class="d-inline-block text-truncate">${fav.novoNome}</span>
@@ -406,3 +412,19 @@ escutaClick()
 // var listaFavoritosId = document.getElementById('listaLocais')
 
 
+function preencheDetalhes() {
+    var listaDetalhes = document.querySelector("#listaDetalhes");
+    listaDetalhes.querySelector('#duracao b').textContent = detalhesRota.duration.text;
+    listaDetalhes.querySelector('#distancia b').textContent = detalhesRota.distance.text;
+    listaDetalhes.querySelector('#calorias b').textContent = calculaCalorias() + ' Kcal';
+}
+
+function calculaCalorias() {
+    //0,049 x (Seu peso x 2,2) x Total de minutos de prática = Calorias queimadas.
+    const multiplicadorGeral = 0.049;
+    const multiplicadorPeso = 2.2;
+    let peso = usuarioLogado.peso || 60;
+    let duracao = detalhesRota.duration.value / 60;
+
+    return Math.round((peso * multiplicadorPeso) * multiplicadorGeral * duracao);
+}
