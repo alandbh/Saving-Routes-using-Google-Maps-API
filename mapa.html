@@ -75,7 +75,7 @@
                         </div>
                     </div> <!-- form-locais -->
                     <div class="row lista-favoritos">
-                        <div class="col-12 col-md-6">
+                        <div class="col-6">
                             <button 
                                 type="button" 
                                 data-bs-toggle="collapse" 
@@ -83,11 +83,31 @@
                                 aria-expanded="false" 
                                 aria-controls="listaLocais"
                                 class="btn">
-                                    Locais favoritos 
-                                    <i class="bi bi-chevron-down"></i>
+                                <i class="bi bi-bookmark-heart"></i>
+                                    Favoritos 
                             </button>
+                        </div>
+                        <div class="col-6">
+                            <button 
+                                type="button" 
+                                data-bs-toggle="collapse" 
+                                data-bs-target="#detalhesContainer" 
+                                aria-expanded="false" 
+                                aria-controls="detalhesContainer"
+                                class="btn">
+                                <i class="bi bi-stopwatch"></i>
+                                    Detalhes 
+                            </button>
+                        </div>
+                        <div class="col-12">
                             <ul class="list-group my-2" id="listaLocais">
                                 
+                            </ul>
+                        </div>
+                        <div class="col-12">
+                            <ul class="list-group my-2 collapse" id="detalhesContainer">
+                                <li class="list-group-item">asasa</li>
+                                <li class="list-group-item">asasa</li>
                             </ul>
                         </div>
                     </div>

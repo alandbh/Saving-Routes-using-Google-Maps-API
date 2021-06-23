@@ -300,16 +300,20 @@ function montaLista() {
 montaLista()
 
 function escutaClick() {
-    var itensListaFavoritos = document.querySelectorAll('.lista-favoritos li');
-    
-    itensListaFavoritos.forEach((item)=> {
-        item.querySelector('button').addEventListener('click', (evento)=> {
-            // console.log(item.id)
-    
-            alteraDestino(item.id);
-            listaCollapse.hide();
+    var itensListaFavoritos = document.querySelectorAll('#listaLocais li');
+
+    if (itensListaFavoritos) {
+        
+        itensListaFavoritos.forEach((item)=> {
+            item.querySelector('button').addEventListener('click', (evento)=> {
+                // console.log(item.id)
+        
+                alteraDestino(item.id);
+                listaCollapse.hide();
+            })
         })
-    })
+    }
+    
 
 }
 
