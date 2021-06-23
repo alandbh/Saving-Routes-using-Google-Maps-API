@@ -1,5 +1,7 @@
-var listaUsuarios = JSON.parse(window.localStorage.usuarios);
+var listaUsuarios = window.localStorage.usuarios ? JSON.parse(window.localStorage.usuarios) : [];
 window.usuarioLogado = null;
+window.sessionStorage.usuarioLogado = '';
+
 
 window.addEventListener("load", function () {
 
@@ -8,6 +10,9 @@ window.addEventListener("load", function () {
     let campoLogin = document.querySelector("#nomelog");
     let campoSenha = document.querySelector("#senhalog");
 
+    let erroTemplate = document.createElement('div');
+    erroTemplate.classList.add('w-100')
+    campoSenha.parentNode.appendChild(erroTemplate);
     
     formulario.onsubmit = (evento)=> {
         evento.preventDefault()
@@ -15,8 +20,7 @@ window.addEventListener("load", function () {
         let login = campoLogin.value;
         console.log('submeter')
 
-        let erroTemplate = document.createElement('div');
-        erroTemplate.classList.add('w-100')
+       
 
         let usuarioRegistrado = listaUsuarios.find((item)=>item.email === login) || null;
 
@@ -24,10 +28,11 @@ window.addEventListener("load", function () {
             console.log('ok');
             usuarioLogado = usuarioRegistrado;
             window.sessionStorage.usuarioLogado = login;
+            window.localStorage.setItem('usuarioLogado', JSON.stringify(usuarioLogado))
             window.open("/mapa.html","_self")
         } else {
-            erroTemplate.innerHTML = '<small class="text-danger">Senha incorreta<small>';
-            campoSenha.parentNode.appendChild(erroTemplate);
+            
+            erroTemplate.innerHTML = '<small class="text-danger">Login ou senha incorretos<small>';
         }
 
         

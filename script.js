@@ -1,7 +1,7 @@
 window.usuarios = [];
 var usuario = {};
 var formValid = false;
-var listaUsuarios = JSON.parse(window.localStorage.usuarios) || [];
+var listaUsuarios = window.localStorage.usuarios ? JSON.parse(window.localStorage.usuarios) : [];
 
 window.addEventListener("load", function () {
     let nome = document.getElementById("nameRegistro");

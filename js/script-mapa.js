@@ -1,6 +1,12 @@
 // Create the script tag, set the appropriate attributes
-var listaUsuarios = JSON.parse(window.localStorage.usuarios);
-let usuarioLogado = listaUsuarios.find((item)=>item.email === window.sessionStorage.usuarioLogado) || null;
+var listaUsuarios;
+if (window.localStorage.usuarios) {
+    listaUsuarios = JSON.parse(window.localStorage.usuarios);
+} else {
+    window.open("/index.html","_self")
+
+}
+window.usuarioLogado = listaUsuarios.find((item)=>item.email === window.sessionStorage.usuarioLogado) || null;
 
 if (!usuarioLogado) {
     window.open("/index.html","_self")
@@ -34,10 +40,10 @@ var destinationInput = document.getElementById("destination-input");
 var favButon = document.querySelector("#favoritar");
 var directionsService;
 var directionsDisplay;
-var favDir = [];
-if (window.localStorage.favDir) {
-    favDir = JSON.parse(window.localStorage.favDir);
-}
+// usuarioLogado.favDir = [];
+// if (window.localStorage.usuarioLogado.favDir) {
+//     usuarioLogado.favDir = JSON.parse(window.localStorage.usuarioLogado.favDir);
+// }
 var listaFavoritos = document.querySelector('.lista-favoritos ul');
 var botaoParaOnde = document.querySelector('.para-onde');
 var containerLocais = document.querySelector('#containerLocais')
@@ -249,20 +255,31 @@ function alteraDestino(novoPlaceId) {
     paraOndeCollapse.hide()
   })
 
+  /**
+   * 
+   * Favoritando a rota
+   */
 
  favButon.addEventListener("click", () => {
     // console.log("place", destinationPlace);
-    favDir.push(destinationPlace);
-    window.localStorage.favDir = JSON.stringify(favDir);
+    usuarioLogado.favDir.push(destinationPlace);
+    console.log('logado', usuarioLogado)
+    window.localStorage.usuarioLogado = JSON.stringify(usuarioLogado);
     favButon.disabled = true;
     // place = null;
+    listaUsuarios.forEach((item)=> {if (item.email === usuarioLogado.email) {
+        console.log(item)
+        item.favDir = usuarioLogado.favDir
+    }});
+    window.localStorage.usuarios = JSON.stringify(listaUsuarios);
+
     montaLista();
 });
 
 function montaLista() {
     listaFavoritos.innerHTML = '';
-    if (favDir.length > 0) {
-        favDir.forEach((fav)=> {
+    if (usuarioLogado.favDir.length > 0) {
+        usuarioLogado.favDir.forEach((fav)=> {
             var listaHtml = `
             <li class="list-group-item" id="${fav.place_id}">
                 <button class="d-flex">
@@ -273,6 +290,7 @@ function montaLista() {
             `;
     
             listaFavoritos.innerHTML += listaHtml;
+            listaCollapse.show();
             escutaClick()
         })
     }
