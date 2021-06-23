@@ -17,7 +17,7 @@ domNome.textContent = usuarioLogado.nome.split(' ')[0];
 
 var script = document.createElement("script");
 
-script.src = `https://maps.googleapis.com/maps/api/js?key=${API_KEY}&libraries=places&callback=initMap`;
+script.src = `https://maps.googleapis.com/maps/api/js?key=${API_KEY}&region=BR&language=pt-BR&libraries=places&callback=initMap`;
 script.async = true;
 
 // Append the 'script' element to 'head'
@@ -203,6 +203,7 @@ AutocompleteDirectionsHandler.prototype.route = function () {
                 console.log(response.routes[0].legs[0].end_location.lng());
                 console.log(response.routes[0].legs[0]);
                 detalhesRota = response.routes[0].legs[0];
+                btnDetalhesRota.disabled = false;
                 preencheDetalhes();
 
                 // favoritar();

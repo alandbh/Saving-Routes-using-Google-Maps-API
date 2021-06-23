@@ -9,6 +9,7 @@ window.addEventListener("load", function () {
     let password = document.getElementById("senha");
     let cpassword = document.getElementById("confirmasenha");
     let tel = document.getElementById("telefone");
+    let campoPeso = document.getElementById("peso");
     let ema = document.getElementById("email");
     let salvar = document.getElementById("salvar");
     var formulario = document.querySelector("form.cadastro");
@@ -19,14 +20,20 @@ window.addEventListener("load", function () {
 
         usuario.nome = nome.value;
         usuario.data = date.value;
-        usuario.tel = tel.value;
+        // usuario.tel = tel.value;
         usuario.email = ema.value;
         usuario.senha = password.value;
+        usuario.peso = campoPeso.value;
         usuario.favDir = [];
 
         if (validarCampos()) {
             if (usuarioJaExiste()) {
                 alert('Este email já está sendo usado');
+                return;
+            }
+
+            if (isNaN(campoPeso.value) ) {
+                alert('O peso parece estar incorreto.');
                 return;
             }
             listaUsuarios.push(usuario);
@@ -49,7 +56,8 @@ window.addEventListener("load", function () {
         if (
             nome.value.length > 1 &&
             ema.value.length > 1 &&
-            password.value.length > 1
+            password.value.length > 1 &&
+            campoPeso.value.length > 1
         ) {
             console.log("muou", ema.value);
             formValid = true;
@@ -62,7 +70,7 @@ window.addEventListener("load", function () {
     }
 
     function usuarioJaExiste() {
-        if (listaUsuarios !== null) {
+        if (listaUsuarios && listaUsuarios.length > 0) {
             return Boolean(listaUsuarios.find((usuario)=> usuario.email === ema.value)    )
         }
         return false
