@@ -117,45 +117,36 @@ ul#listaLocais li .btn-deleta {
     
 }
 
+.btn.detalhes-rota,
 .btn.favoritos {
     position: fixed;
-    bottom: 10%;
     left: 20px;
-    background: green;
     border-radius: 30px;
     width: 60px;
     height: 60px;
+    box-shadow: 2px 5px 12px #555;
 }
-
+.btn.detalhes-rota i,
 .btn.favoritos i {
     color: #fff;
     font-size: 26px;
 }
-
+.btn.detalhes-rota:disabled,
 .btn.favoritos:disabled {
     background: grey;
     opacity: .4;
 }
 
 
+.btn.favoritos {
+    bottom: 10%;
+    background: green;
+}
+
+
 .btn.detalhes-rota {
-    position: fixed;
     bottom: calc(10% + 80px);
-    left: 20px;
     background: rebeccapurple;
-    border-radius: 30px;
-    width: 60px;
-    height: 60px;
-}
-
-.btn.detalhes-rota i {
-    color: #fff;
-    font-size: 26px;
-}
-
-.btn.detalhes-rota:disabled {
-    background: grey;
-    opacity: .4;
 }
 
 #favoritar:disabled {
