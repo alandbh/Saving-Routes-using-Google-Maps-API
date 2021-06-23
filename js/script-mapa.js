@@ -40,7 +40,7 @@ var destinationInput = document.getElementById("destination-input");
 var favButon = document.querySelector("#favoritar");
 var directionsService;
 var directionsDisplay;
-usuarioLogado.favDir = [];
+// usuarioLogado.favDir = [];
 if (window.localStorage.usuarioLogado) {
     usuarioLogado = JSON.parse(window.localStorage.usuarioLogado);
 }

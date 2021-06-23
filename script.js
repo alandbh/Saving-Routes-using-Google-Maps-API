@@ -22,6 +22,7 @@ window.addEventListener("load", function () {
         usuario.tel = tel.value;
         usuario.email = ema.value;
         usuario.senha = password.value;
+        usuario.favDir = [];
 
         if (validarCampos()) {
             if (usuarioJaExiste()) {

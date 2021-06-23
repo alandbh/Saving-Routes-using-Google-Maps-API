@@ -1,6 +1,7 @@
 var listaUsuarios = window.localStorage.usuarios ? JSON.parse(window.localStorage.usuarios) : [];
 window.usuarioLogado = null;
 window.sessionStorage.usuarioLogado = '';
+window.localStorage.setItem('usuarioLogado', '');
 
 
 window.addEventListener("load", function () {
