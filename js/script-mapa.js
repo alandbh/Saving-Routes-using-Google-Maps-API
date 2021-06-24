@@ -60,6 +60,11 @@ var btnSalvarRota = modalFavoritar.querySelector('#btn-salvar');
 var btnDeletaRota = modalFavoritar.querySelectorAll('.btn-deleta');
 
 var btnDetalhesRota = document.querySelector('.btn.detalhes-rota');
+var btnFavoritos = document.querySelector(".btn.favoritos");
+var btnIniciarTrajeto = document.querySelector('.btn.iniciar-navegacao');
+var btnEncerrarTrajeto = document.querySelector('.btn.encerrar-navegacao');
+var placeIdInterrupcao;
+var latLngInterrupcao;
 
 function getUniqueBy(arr, key) {
     return [...new Map(arr.map(item => [item[key], item])).values()]
@@ -90,7 +95,7 @@ window.initMap = function initMap() {
             lng: position.longitude,
         });
 
-        service = new google.maps.places.PlacesService(myMap);
+        var mapService = new google.maps.places.PlacesService(myMap);
         var request = {
             location: {
                 lat: position.latitude,
@@ -99,7 +104,7 @@ window.initMap = function initMap() {
             radius: 100,
             type: ["establishment"],
         };
-        service.nearbySearch(request, (result) => {
+        mapService.nearbySearch(request, (result) => {
             console.log(result[1]);
             inputOri.value = result[1].vicinity;
             originPlaceId = result[1].place_id;
@@ -202,8 +207,11 @@ AutocompleteDirectionsHandler.prototype.route = function () {
                 console.log(response.routes[0].legs[0].end_location.lat());
                 console.log(response.routes[0].legs[0].end_location.lng());
                 console.log(response.routes[0].legs[0]);
+                console.log(response.routes[0]);
                 detalhesRota = response.routes[0].legs[0];
                 btnDetalhesRota.disabled = false;
+                latLngInterrupcao = detalhesRota.steps[Math.floor(detalhesRota.steps.length / 2)].end_location;
+                getPlaceId(latLngInterrupcao.lat(), latLngInterrupcao.lng());
                 preencheDetalhes();
 
                 // favoritar();
@@ -215,14 +223,26 @@ AutocompleteDirectionsHandler.prototype.route = function () {
 };
 
 
+function getPlaceId(lat, lng) {
+    service = new google.maps.places.PlacesService(myMap);
+    var request = {
+        location: {
+            lat: lat,
+            lng: lng,
+        },
+        radius: 100,
+        type: ["establishment"],
+    };
+
+    service.nearbySearch(request, (result) => {
+        placeIdInterrupcao = result[1].place_id;
+        
+    })
+
+}
+
 
 function alteraDestino(novoPlaceId) {
-    // var novoEndereco =
-    //     "Av. Augusto de Lima, 744 - Centro, Belo Horizonte - MG, 30190-922, Brazil";
-    // var destinationPlaceId = "ChIJAz0eA-KZpgARYAFkjcWmbI4";
-    // var campoDestino = document.querySelector("#destination-input");
-
-    // campoDestino.value = novoEndereco;
 
     var parametros = {
         origin: { placeId: originPlaceId },
@@ -236,6 +256,8 @@ function alteraDestino(novoPlaceId) {
             console.log(response);
             detalhesRota = response.routes[0].legs[0];
             btnDetalhesRota.disabled = false;
+            latLngInterrupcao = detalhesRota.steps[Math.floor(detalhesRota.steps.length / 2)].end_location;
+            getPlaceId(latLngInterrupcao.lat(), latLngInterrupcao.lng());
             preencheDetalhes();
         } else {
             window.alert("Directions request failed due to " + status);
@@ -285,11 +307,6 @@ function alteraDestino(novoPlaceId) {
    */
 
  favButon.addEventListener("click", () => {
-  
-
-    
-
-
     // Abre a modal
     modalFavoritarObj.show();
     modalFavoritar.addEventListener('shown.bs.modal', function () {
@@ -351,7 +368,7 @@ function deletaRota(placeId) {
 
 function montaLista() {
     listaFavoritos.innerHTML = '';
-    var btnFavoritos = document.querySelector(".btn.favoritos");
+    
     btnFavoritos.disabled = true;
     modalFavoritarObj.hide();
     if (usuarioLogado.favDir.length > 0) {
@@ -418,6 +435,8 @@ function preencheDetalhes() {
     listaDetalhes.querySelector('#duracao b').textContent = detalhesRota.duration.text;
     listaDetalhes.querySelector('#distancia b').textContent = detalhesRota.distance.text;
     listaDetalhes.querySelector('#calorias b').textContent = calculaCalorias() + ' Kcal';
+
+    habilitaIniciarTrajeto();
 }
 
 function calculaCalorias() {
@@ -429,3 +448,46 @@ function calculaCalorias() {
 
     return Math.round((peso * multiplicadorPeso) * multiplicadorGeral * duracao);
 }
+
+/**
+ * 
+ * Iniciar trajeto
+ */
+
+function habilitaIniciarTrajeto() {
+
+    setTimeout(()=>{
+        btnIniciarTrajeto.disabled = false
+
+    }, 2000)
+    
+    btnIniciarTrajeto.addEventListener('click', ()=>{
+        document.querySelector('body').classList.add('nav-open');
+        btnDetalhesRota.classList.add('hide');
+        btnFavoritos.classList.add('hide');
+
+        myMap.setCenter({
+            lat: detalhesRota.start_location.lat(),
+            lng: detalhesRota.start_location.lng()
+        })
+
+        myMap.setZoom(22);
+
+        setTimeout(()=>{
+            btnIniciarTrajeto.disabled = true;
+            btnEncerrarTrajeto.disabled = false;
+        },1000)
+    })
+}
+
+/**
+ * 
+ * Encerrar trajeto
+ */
+ btnEncerrarTrajeto.addEventListener('click', ()=> {
+    alteraDestino(placeIdInterrupcao);
+    document.querySelector('body').classList.add('nav-open');
+    btnEncerrarTrajeto.disabled = true;
+    btnDetalhesRota.classList.remove('hide');
+    btnFavoritos.classList.remove('hide');
+ })
