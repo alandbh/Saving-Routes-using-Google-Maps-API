@@ -486,7 +486,7 @@ function habilitaIniciarTrajeto() {
  */
  btnEncerrarTrajeto.addEventListener('click', ()=> {
     alteraDestino(placeIdInterrupcao);
-    document.querySelector('body').classList.add('nav-open');
+    document.querySelector('body').classList.remove('nav-open');
     btnEncerrarTrajeto.disabled = true;
     btnDetalhesRota.classList.remove('hide');
     btnFavoritos.classList.remove('hide');
