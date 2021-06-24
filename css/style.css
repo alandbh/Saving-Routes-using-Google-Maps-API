@@ -14,7 +14,6 @@ main > .container {
     z-index: 1;
     position: relative;
     height: 100px;
-
 }
 
 #map {
@@ -69,8 +68,7 @@ main > .container {
 
 body.form-open .mapa {
     height: calc(100vh - 100px);
-    transition: .5s;
-
+    transition: 0.5s;
 }
 body.nav-open .mapa {
     height: 100vh;
@@ -79,7 +77,7 @@ body.nav-open .mapa {
 body.nav-open .form-mapa {
     height: 0px;
     overflow: hidden;
-    transition: .5s;
+    transition: 0.5s;
 }
 
 body {
@@ -93,18 +91,15 @@ body {
     width: 100%;
 }
 
-
 /*
     Lista de Favoritos
 */
-
-
 
 ul#listaLocais li {
     cursor: pointer;
     /* justify-content: space-between; */
 }
-ul#listaLocais li.list-group-item  {
+ul#listaLocais li.list-group-item {
     padding: 10px;
 }
 ul#listaLocais li:hover {
@@ -124,7 +119,6 @@ ul#listaLocais li .btn-deleta {
     width: 40px;
     height: 40px;
     justify-content: center;
-    
 }
 
 .btn.detalhes-rota,
@@ -135,7 +129,7 @@ ul#listaLocais li .btn-deleta {
     width: 60px;
     height: 60px;
     box-shadow: 2px 5px 12px #555;
-    transition: transform ease .4s;
+    transition: transform ease 0.4s;
 }
 .btn.detalhes-rota i,
 .btn.favoritos i {
@@ -145,7 +139,7 @@ ul#listaLocais li .btn-deleta {
 .btn.detalhes-rota:disabled,
 .btn.favoritos:disabled {
     background: grey;
-    opacity: .4;
+    opacity: 0.4;
 }
 
 .btn.detalhes-rota.hide,
@@ -153,12 +147,10 @@ ul#listaLocais li .btn-deleta {
     transform: translateX(-120px);
 }
 
-
 .btn.favoritos {
     bottom: 10%;
     background: green;
 }
-
 
 .btn.detalhes-rota {
     bottom: calc(10% + 80px);
@@ -166,38 +158,34 @@ ul#listaLocais li .btn-deleta {
 }
 
 #favoritar:disabled {
-    opacity: .5;
+    opacity: 0.5;
 }
 
-#favoritar:disabled i{
+#favoritar:disabled i {
     color: grey !important;
+}
 
+.btn.iniciar-navegacao,
+.btn.encerrar-navegacao {
+    color: #fff;
+    font-size: 1.3rem;
+    position: fixed;
+    bottom: 50px;
+    z-index: 4;
+    border-radius: 40px;
+    transition: ease 0.4s transform;
+    transform: translateY(0);
+    left: calc(50% - 100px);
+    width: 200px;
+    box-shadow: 2px 5px 12px #555;
 }
 
 .btn.iniciar-navegacao {
     background: green;
-    color: #fff;
-    font-size: 1.3rem;
-    position: fixed;
-    bottom: 50px;
-    z-index: 4;
-    left: calc(50% - 85px);
-    border-radius: 40px;
-    transition: ease .4s transform;
-    transform: translateY(0);
 }
 
 .btn.encerrar-navegacao {
     background: rgb(181, 7, 7);
-    color: #fff;
-    font-size: 1.3rem;
-    position: fixed;
-    bottom: 50px;
-    z-index: 4;
-    left: calc(50% - 85px);
-    border-radius: 40px;
-    transition: ease .4s transform;
-    transform: translateY(0);
 }
 
 .btn.iniciar-navegacao:disabled {
