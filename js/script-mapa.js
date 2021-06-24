@@ -1,19 +1,55 @@
-// Create the script tag, set the appropriate attributes
+/**
+ * ******************************************************************
+ *
+ * Scripts do app de criação, gravação e exclusão de rotas
+ *
+ * Autores:
+ * Janaina, Mariana, Pedro
+ *
+ * Junho/2021
+ * Belo Horizonte, Brasil
+ *
+ * ******************************************************************
+ */
+
+/**
+ *
+ * Verifica a autenticação.
+ *
+ * Caso não exista nenhum usuário logago, o sistema volta para a tela de login
+ */
+
+// Declarando a variável que vai receber o array com a lista de usuários
 var listaUsuarios;
+
+// Checando se existe alguma lista no localstorage
 if (window.localStorage.usuarios) {
+    // Se sim, grava essa lista na variável acima
     listaUsuarios = JSON.parse(window.localStorage.usuarios);
 } else {
-    window.open("/index.html","_self")
-
+    // Se não, abrir a página de login
+    window.open("/index.html", "_self");
 }
-window.usuarioLogado = listaUsuarios.find((item)=>item.email === window.sessionStorage.usuarioLogado) || null;
 
+// Cria uma variável global chamada "usuarioLogado", que...
+// ...vai receber o objeto usuário que está dentro da lista de usuários (variável listaUsuarios acima).
+// Para encontrar apenas o objeto do usuário que está logado, ...
+// ... usamos o método "find" para localizar esse objeto pelo login/email que...
+// ...foi gravado na sessionStorage pela tela de login.
+// Caso nada seja encontrado, a variável "usuarioLogado" recebe null.
+window.usuarioLogado =
+    listaUsuarios.find(
+        (item) => item.email === window.sessionStorage.usuarioLogado
+    ) || null;
+
+// Se a variavel global "usuarioLogado" for nula, carregar a tela de login.
 if (!usuarioLogado) {
-    window.open("/index.html","_self")
+    window.open("/index.html", "_self");
 }
 
+// Escreve o nome do usuário logado no botão "Para onde vamos..."
 var domNome = document.querySelector("#btn-para-onde b");
-domNome.textContent = usuarioLogado.nome.split(' ')[0];
+domNome.textContent = usuarioLogado.nome.split(" ")[0];
 
 var script = document.createElement("script");
 
@@ -22,7 +58,6 @@ script.async = true;
 
 // Append the 'script' element to 'head'
 document.head.appendChild(script);
-
 
 var infowindow;
 /**
@@ -44,30 +79,30 @@ var directionsDisplay;
 if (window.localStorage.usuarioLogado) {
     usuarioLogado = JSON.parse(window.localStorage.usuarioLogado);
 }
-var listaFavoritos = document.querySelector('ul#listaLocais');
-var botaoParaOnde = document.querySelector('.para-onde');
-var containerLocais = document.querySelector('#containerLocais')
+var listaFavoritos = document.querySelector("ul#listaLocais");
+var botaoParaOnde = document.querySelector(".para-onde");
+var containerLocais = document.querySelector("#containerLocais");
 var detalhesRota;
 
-var modalFavoritos = document.querySelector('.modal-favoritos');
+var modalFavoritos = document.querySelector(".modal-favoritos");
 var modalFavoritosObj = new bootstrap.Modal(modalFavoritos, {});
 
-var modalFavoritar = document.querySelector('.modal-favoritar');
+var modalFavoritar = document.querySelector(".modal-favoritar");
 
 var modalFavoritarObj = new bootstrap.Modal(modalFavoritar, {});
 
-var btnSalvarRota = modalFavoritar.querySelector('#btn-salvar');
-var btnDeletaRota = modalFavoritar.querySelectorAll('.btn-deleta');
+var btnSalvarRota = modalFavoritar.querySelector("#btn-salvar");
+var btnDeletaRota = modalFavoritar.querySelectorAll(".btn-deleta");
 
-var btnDetalhesRota = document.querySelector('.btn.detalhes-rota');
+var btnDetalhesRota = document.querySelector(".btn.detalhes-rota");
 var btnFavoritos = document.querySelector(".btn.favoritos");
-var btnIniciarTrajeto = document.querySelector('.btn.iniciar-navegacao');
-var btnEncerrarTrajeto = document.querySelector('.btn.encerrar-navegacao');
+var btnIniciarTrajeto = document.querySelector(".btn.iniciar-navegacao");
+var btnEncerrarTrajeto = document.querySelector(".btn.encerrar-navegacao");
 var placeIdInterrupcao;
 var latLngInterrupcao;
 
 function getUniqueBy(arr, key) {
-    return [...new Map(arr.map(item => [item[key], item])).values()]
+    return [...new Map(arr.map((item) => [item[key], item])).values()];
 }
 
 /**
@@ -210,7 +245,10 @@ AutocompleteDirectionsHandler.prototype.route = function () {
                 console.log(response.routes[0]);
                 detalhesRota = response.routes[0].legs[0];
                 btnDetalhesRota.disabled = false;
-                latLngInterrupcao = detalhesRota.steps[Math.floor(detalhesRota.steps.length / 2)].end_location;
+                latLngInterrupcao =
+                    detalhesRota.steps[
+                        Math.floor(detalhesRota.steps.length / 2)
+                    ].end_location;
                 getPlaceId(latLngInterrupcao.lat(), latLngInterrupcao.lng());
                 preencheDetalhes();
 
@@ -221,7 +259,6 @@ AutocompleteDirectionsHandler.prototype.route = function () {
         }
     );
 };
-
 
 function getPlaceId(lat, lng) {
     service = new google.maps.places.PlacesService(myMap);
@@ -236,14 +273,10 @@ function getPlaceId(lat, lng) {
 
     service.nearbySearch(request, (result) => {
         placeIdInterrupcao = result[1].place_id;
-        
-    })
-
+    });
 }
 
-
 function alteraDestino(novoPlaceId) {
-
     var parametros = {
         origin: { placeId: originPlaceId },
         destination: { placeId: novoPlaceId },
@@ -256,7 +289,9 @@ function alteraDestino(novoPlaceId) {
             console.log(response);
             detalhesRota = response.routes[0].legs[0];
             btnDetalhesRota.disabled = false;
-            latLngInterrupcao = detalhesRota.steps[Math.floor(detalhesRota.steps.length / 2)].end_location;
+            latLngInterrupcao =
+                detalhesRota.steps[Math.floor(detalhesRota.steps.length / 2)]
+                    .end_location;
             getPlaceId(latLngInterrupcao.lat(), latLngInterrupcao.lng());
             preencheDetalhes();
         } else {
@@ -269,111 +304,107 @@ function alteraDestino(novoPlaceId) {
     directionsService.route(parametros, aplicaDirecao);
 }
 
-
 /**
- * 
+ *
  * Tela inicial
  */
 
-    destinationInput.addEventListener('click', ()=>{
-        destinationInput.value = ''
-    })
-
-    var listaCollapse = new bootstrap.Collapse(listaFavoritos, {
-        toggle: false
-    })
-    listaCollapse.show();
-
-    var paraOndeCollapse = new bootstrap.Collapse(botaoParaOnde, {
-        toggle: false
-    })
-    paraOndeCollapse.show();
-
-    var containerLocaisCollapse = new bootstrap.Collapse(containerLocais, {
-        toggle: false
-    })
-    containerLocaisCollapse.hide();
-
-    botaoParaOnde.querySelector('button').addEventListener('click', ()=> {
-        containerLocaisCollapse.show();
-        paraOndeCollapse.hide();
-        document.querySelector('body').classList.add('form-open')
-    })
-
-  /**
-   * 
-   * 
-   * Favoritando a rota
-   */
-
- favButon.addEventListener("click", () => {
-    // Abre a modal
-    modalFavoritarObj.show();
-    modalFavoritar.addEventListener('shown.bs.modal', function () {
-
-        console.log('abre modal');
-        modalFavoritar.querySelector('#nome-rota').focus()
-        modalFavoritar.querySelector('#nome-rota').value = detalhesRota.end_address;
-
-       
-    })
-
-
+destinationInput.addEventListener("click", () => {
+    destinationInput.value = "";
 });
 
-btnSalvarRota.addEventListener('click', ()=> {
-    var novoNome = modalFavoritar.querySelector('#nome-rota').value;
+var listaCollapse = new bootstrap.Collapse(listaFavoritos, {
+    toggle: false,
+});
+listaCollapse.show();
+
+var paraOndeCollapse = new bootstrap.Collapse(botaoParaOnde, {
+    toggle: false,
+});
+paraOndeCollapse.show();
+
+var containerLocaisCollapse = new bootstrap.Collapse(containerLocais, {
+    toggle: false,
+});
+containerLocaisCollapse.hide();
+
+botaoParaOnde.querySelector("button").addEventListener("click", () => {
+    containerLocaisCollapse.show();
+    paraOndeCollapse.hide();
+    document.querySelector("body").classList.add("form-open");
+});
+
+/**
+ *
+ *
+ * Favoritando a rota
+ */
+
+favButon.addEventListener("click", () => {
+    // Abre a modal
+    modalFavoritarObj.show();
+    modalFavoritar.addEventListener("shown.bs.modal", function () {
+        console.log("abre modal");
+        modalFavoritar.querySelector("#nome-rota").focus();
+        modalFavoritar.querySelector("#nome-rota").value =
+            detalhesRota.end_address;
+    });
+});
+
+btnSalvarRota.addEventListener("click", () => {
+    var novoNome = modalFavoritar.querySelector("#nome-rota").value;
     destinationPlace.novoNome = novoNome;
 
     gravaRota();
 
     modalFavoritarObj.hide();
-})
-
+});
 
 function gravaRota() {
-
     console.log(destinationPlace);
 
     usuarioLogado.favDir.push(destinationPlace);
     window.localStorage.usuarioLogado = JSON.stringify(usuarioLogado);
     favButon.disabled = true;
     // // place = null;
-    listaUsuarios.forEach((item)=> {if (item.email === usuarioLogado.email) {
-        // console.log(item)
-        item.favDir = usuarioLogado.favDir
-    }});
+    listaUsuarios.forEach((item) => {
+        if (item.email === usuarioLogado.email) {
+            // console.log(item)
+            item.favDir = usuarioLogado.favDir;
+        }
+    });
     window.localStorage.usuarios = JSON.stringify(listaUsuarios);
 
     montaLista();
 }
 
 function deletaRota(placeId) {
-
-    var novoFavDir = usuarioLogado.favDir.filter((item)=> item.place_id !== placeId)
+    var novoFavDir = usuarioLogado.favDir.filter(
+        (item) => item.place_id !== placeId
+    );
 
     usuarioLogado.favDir = novoFavDir;
     window.localStorage.usuarioLogado = JSON.stringify(usuarioLogado);
     // // place = null;
-    listaUsuarios.forEach((item)=> {if (item.email === usuarioLogado.email) {
-        // console.log(item)
-        item.favDir = usuarioLogado.favDir
-    }});
+    listaUsuarios.forEach((item) => {
+        if (item.email === usuarioLogado.email) {
+            // console.log(item)
+            item.favDir = usuarioLogado.favDir;
+        }
+    });
     window.localStorage.usuarios = JSON.stringify(listaUsuarios);
 
     montaLista();
 }
 
-
-
 function montaLista() {
-    listaFavoritos.innerHTML = '';
-    
+    listaFavoritos.innerHTML = "";
+
     btnFavoritos.disabled = true;
     modalFavoritarObj.hide();
     if (usuarioLogado.favDir.length > 0) {
         btnFavoritos.disabled = false;
-        usuarioLogado.favDir.forEach((fav)=> {
+        usuarioLogado.favDir.forEach((fav) => {
             var listaHtml = `
             <li class="list-group-item d-flex justify-content-between" id="${fav.place_id}">
                 <button class="d-flex btn-rota">
@@ -385,56 +416,52 @@ function montaLista() {
                 </button>
             </li>
             `;
-    
+
             listaFavoritos.innerHTML += listaHtml;
             listaCollapse.show();
             escutaClick();
-        })
+        });
     }
-
-
 }
 
-montaLista()
+montaLista();
 
 function escutaClick() {
-    var itensListaFavoritos = document.querySelectorAll('#listaLocais li');
-    btnDeletaRota = document.querySelectorAll('.btn-deleta');
-
+    var itensListaFavoritos = document.querySelectorAll("#listaLocais li");
+    btnDeletaRota = document.querySelectorAll(".btn-deleta");
 
     if (itensListaFavoritos) {
-        
-        itensListaFavoritos.forEach((item)=> {
-            item.querySelector('button').addEventListener('click', (evento)=> {
+        itensListaFavoritos.forEach((item) => {
+            item.querySelector("button").addEventListener("click", (evento) => {
                 // console.log(item.id)
-        
+
                 alteraDestino(item.id);
                 modalFavoritosObj.hide();
-            })
-        })
+            });
+        });
     }
 
     btnDeletaRota.forEach((btn) => {
-        btn.addEventListener('click', ()=>{
+        btn.addEventListener("click", () => {
             let placeIdToRemove = btn.parentNode.id;
             // console.log(placeIdToRemove);
             deletaRota(placeIdToRemove);
-        })
+        });
     });
-    
-
 }
 
-escutaClick()
+escutaClick();
 
 // var listaFavoritosId = document.getElementById('listaLocais')
 
-
 function preencheDetalhes() {
     var listaDetalhes = document.querySelector("#listaDetalhes");
-    listaDetalhes.querySelector('#duracao b').textContent = detalhesRota.duration.text;
-    listaDetalhes.querySelector('#distancia b').textContent = detalhesRota.distance.text;
-    listaDetalhes.querySelector('#calorias b').textContent = calculaCalorias() + ' Kcal';
+    listaDetalhes.querySelector("#duracao b").textContent =
+        detalhesRota.duration.text;
+    listaDetalhes.querySelector("#distancia b").textContent =
+        detalhesRota.distance.text;
+    listaDetalhes.querySelector("#calorias b").textContent =
+        calculaCalorias() + " Kcal";
 
     habilitaIniciarTrajeto();
 }
@@ -446,48 +473,46 @@ function calculaCalorias() {
     let peso = usuarioLogado.peso || 60;
     let duracao = detalhesRota.duration.value / 60;
 
-    return Math.round((peso * multiplicadorPeso) * multiplicadorGeral * duracao);
+    return Math.round(peso * multiplicadorPeso * multiplicadorGeral * duracao);
 }
 
 /**
- * 
+ *
  * Iniciar trajeto
  */
 
 function habilitaIniciarTrajeto() {
+    setTimeout(() => {
+        btnIniciarTrajeto.disabled = false;
+    }, 2000);
 
-    setTimeout(()=>{
-        btnIniciarTrajeto.disabled = false
-
-    }, 2000)
-    
-    btnIniciarTrajeto.addEventListener('click', ()=>{
-        document.querySelector('body').classList.add('nav-open');
-        btnDetalhesRota.classList.add('hide');
-        btnFavoritos.classList.add('hide');
+    btnIniciarTrajeto.addEventListener("click", () => {
+        document.querySelector("body").classList.add("nav-open");
+        btnDetalhesRota.classList.add("hide");
+        btnFavoritos.classList.add("hide");
 
         myMap.setCenter({
             lat: detalhesRota.start_location.lat(),
-            lng: detalhesRota.start_location.lng()
-        })
+            lng: detalhesRota.start_location.lng(),
+        });
 
         myMap.setZoom(22);
 
-        setTimeout(()=>{
+        setTimeout(() => {
             btnIniciarTrajeto.disabled = true;
             btnEncerrarTrajeto.disabled = false;
-        },1000)
-    })
+        }, 1000);
+    });
 }
 
 /**
- * 
+ *
  * Encerrar trajeto
  */
- btnEncerrarTrajeto.addEventListener('click', ()=> {
+btnEncerrarTrajeto.addEventListener("click", () => {
     alteraDestino(placeIdInterrupcao);
-    document.querySelector('body').classList.remove('nav-open');
+    document.querySelector("body").classList.remove("nav-open");
     btnEncerrarTrajeto.disabled = true;
-    btnDetalhesRota.classList.remove('hide');
-    btnFavoritos.classList.remove('hide');
- })
+    btnDetalhesRota.classList.remove("hide");
+    btnFavoritos.classList.remove("hide");
+});
