@@ -121,6 +121,10 @@ ul#listaLocais li .btn-deleta {
     justify-content: center;
 }
 
+.para-onde button {
+    margin-top: 13px;
+}
+
 .btn.detalhes-rota,
 .btn.favoritos {
     position: fixed;

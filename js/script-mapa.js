@@ -73,7 +73,7 @@ document.head.appendChild(googleMapsScript);
  * Algumas variáveis são aplicadas diretamente no objeto global window, para facilitar o debug
  */
 var infowindow;
-var originPlaceId = null;
+var originPlaceId = "ChIJMyzPysqQpgARlznSOl55NVs";
 var destinationPlaceId = null;
 var destinationPlace;
 var inputOri = document.querySelector("#origin-input");
@@ -116,6 +116,7 @@ function getUniqueBy(arr, key) {
 /**
  *
  * Função initMap
+ * ********************
  *
  * Função que é chamada quando o mapa é iniciado
  */
@@ -139,7 +140,6 @@ window.initMap = function initMap() {
             centralizaMapa(position.coords)
         );
     })();
-    // getLocation();
 
     // Função para centralizar o mapa
     function centralizaMapa(position) {
@@ -148,6 +148,7 @@ window.initMap = function initMap() {
             lng: position.longitude,
         });
 
+        //Instancia o mapService para pegar o PlaceID da origem
         var mapService = new google.maps.places.PlacesService(myMap);
         var request = {
             location: {
@@ -160,18 +161,29 @@ window.initMap = function initMap() {
         mapService.nearbySearch(request, (result) => {
             console.log(result);
             // inputOri.value = result[1].vicinity;
+
+            // Coloca a string "Meu local" no campo de origem
             inputOri.value = "Meu local";
+
+            // Aplica o placeId encontrado na variavel global originPlaceId
             originPlaceId = result[1].place_id;
         });
     }
 };
+
+/**
+ *
+ * Função para o autocomplete
+ * ********************
+ *
+ * Função que vai lidar com todos os eventos do componente de autocomplete
+ */
 function AutocompleteDirectionsHandler(map) {
     this.map = map;
     this.originPlaceId = originPlaceId;
     this.destinationPlaceId = destinationPlaceId;
     this.travelMode = "BICYCLING";
 
-    var modeSelector = document.getElementById("mode-selector");
     directionsService = new google.maps.DirectionsService();
     directionsDisplay = new google.maps.DirectionsRenderer();
     this.directionsService = directionsService;
@@ -186,16 +198,8 @@ function AutocompleteDirectionsHandler(map) {
         { fields: ["place_id", "name", "types"] }
     );
 
-    // this.setupClickListener("changemode-walking", "WALKING");
-    // this.setupClickListener("changemode-transit", "TRANSIT");
-    // this.setupClickListener("changemode-driving", "DRIVING");
-
     this.setupPlaceChangedListener(originAutocomplete, "ORIG");
     this.setupPlaceChangedListener(destinationAutocomplete, "DEST");
-
-    // this.map.controls[google.maps.ControlPosition.TOP_LEFT].push(originInput);
-    // this.map.controls[google.maps.ControlPosition.TOP_LEFT].push(destinationInput);
-    // this.map.controls[google.maps.ControlPosition.TOP_LEFT].push(modeSelector);
 }
 
 AutocompleteDirectionsHandler.prototype.setupPlaceChangedListener = function (
