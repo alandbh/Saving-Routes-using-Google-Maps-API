@@ -51,18 +51,28 @@ if (!usuarioLogado) {
 var domNome = document.querySelector("#btn-para-onde b");
 domNome.textContent = usuarioLogado.nome.split(" ")[0];
 
-var script = document.createElement("script");
-
-script.src = `https://maps.googleapis.com/maps/api/js?key=${API_KEY}&region=BR&language=pt-BR&libraries=places&callback=initMap`;
-script.async = true;
-
-// Append the 'script' element to 'head'
-document.head.appendChild(script);
-
-var infowindow;
 /**
- * Variáveis globais
+ *
+ * Adiciona o script da API do Google Maps.
+ *
+ * Cria a tag script dinamicamente, para não expor a chave da API para o público.
  */
+var googleMapsScript = document.createElement("script");
+
+googleMapsScript.src = `https://maps.googleapis.com/maps/api/js?key=${API_KEY}&region=BR&language=pt-BR&libraries=places&callback=initMap`;
+googleMapsScript.async = true;
+
+// Faz um append do elemento 'script' no 'head' da página
+document.head.appendChild(googleMapsScript);
+
+/**
+ *
+ * Variáveis globais
+ *
+ * São variáveis que serão usadas por várias funções diferentes.
+ * Algumas variáveis são aplicadas diretamente no objeto global window, para facilitar o debug
+ */
+var infowindow;
 var originPlaceId = null;
 var destinationPlaceId = null;
 var destinationPlace;
@@ -75,7 +85,6 @@ var destinationInput = document.getElementById("destination-input");
 var favButon = document.querySelector("#favoritar");
 var directionsService;
 var directionsDisplay;
-// usuarioLogado.favDir = [];
 if (window.localStorage.usuarioLogado) {
     usuarioLogado = JSON.parse(window.localStorage.usuarioLogado);
 }
@@ -98,7 +107,6 @@ var btnDetalhesRota = document.querySelector(".btn.detalhes-rota");
 var btnFavoritos = document.querySelector(".btn.favoritos");
 var btnIniciarTrajeto = document.querySelector(".btn.iniciar-navegacao");
 var btnEncerrarTrajeto = document.querySelector(".btn.encerrar-navegacao");
-var placeIdInterrupcao;
 var latLngInterrupcao;
 
 function getUniqueBy(arr, key) {
@@ -107,24 +115,34 @@ function getUniqueBy(arr, key) {
 
 /**
  *
+ * Função initMap
+ *
  * Função que é chamada quando o mapa é iniciado
  */
+
 window.initMap = function initMap() {
+    // Instância do mapa grada na variável "myMap" no objeto global "window"
     window.myMap = new google.maps.Map(document.getElementById("map"), {
         mapTypeControl: false,
         center: { lat: -19.8573741, lng: -43.9108319 },
         zoom: 15.3,
     });
+
+    // Cria uma instância para o autocomplete
     new AutocompleteDirectionsHandler(myMap);
-    async function getLocation() {
+
+    // Centraliza o mapa na localização atual do aparelho
+    // Para isso, pega as coordenadas atuais do navegador
+    (async function getLocation() {
         await navigator.geolocation.getCurrentPosition((position) =>
-            setNewCenter(position.coords)
+            // chama a função para centralizar o mapa, passando adiante as coordenadas
+            centralizaMapa(position.coords)
         );
-    }
+    })();
+    // getLocation();
 
-    getLocation();
-
-    function setNewCenter(position) {
+    // Função para centralizar o mapa
+    function centralizaMapa(position) {
         myMap.setCenter({
             lat: position.latitude,
             lng: position.longitude,
@@ -146,10 +164,6 @@ window.initMap = function initMap() {
         });
     }
 };
-
-/**
- * @constructor
- */
 function AutocompleteDirectionsHandler(map) {
     this.map = map;
     this.originPlaceId = originPlaceId;
@@ -249,7 +263,6 @@ AutocompleteDirectionsHandler.prototype.route = function () {
                     detalhesRota.steps[
                         Math.floor(detalhesRota.steps.length / 2)
                     ].end_location;
-                getPlaceId(latLngInterrupcao.lat(), latLngInterrupcao.lng());
                 preencheDetalhes();
 
                 // favoritar();
@@ -260,7 +273,7 @@ AutocompleteDirectionsHandler.prototype.route = function () {
     );
 };
 
-function getPlaceId(lat, lng) {
+function getPlaceId(lat, lng, variavelPlaceId) {
     service = new google.maps.places.PlacesService(myMap);
     var request = {
         location: {
@@ -272,14 +285,29 @@ function getPlaceId(lat, lng) {
     };
 
     service.nearbySearch(request, (result) => {
-        placeIdInterrupcao = result[1].place_id;
+        variavelPlaceId = result[1].place_id;
     });
 }
 
-function alteraDestino(novoPlaceId) {
+/**
+ *
+ * Função alteraDestino
+ * **************************
+ *
+ * Recebe os parametros do novo destino e redesenha a rota.
+ * Os parametros podem ser uma string com o placeId ou as coordenadas
+ */
+function alteraDestino(novasCoordenadas) {
+    let novoDestino;
+    if (typeof novasCoordenadas == "object") {
+        novoDestino = novasCoordenadas;
+    } else {
+        novoDestino = { placeId: novasCoordenadas };
+    }
+    // let newDestination = latLng ? latLng : { placeId: novoPlaceId };
     var parametros = {
         origin: { placeId: originPlaceId },
-        destination: { placeId: novoPlaceId },
+        destination: novoDestino,
         travelMode: "BICYCLING",
     };
 
@@ -292,7 +320,6 @@ function alteraDestino(novoPlaceId) {
             latLngInterrupcao =
                 detalhesRota.steps[Math.floor(detalhesRota.steps.length / 2)]
                     .end_location;
-            getPlaceId(latLngInterrupcao.lat(), latLngInterrupcao.lng());
             preencheDetalhes();
         } else {
             window.alert("Directions request failed due to " + status);
@@ -312,11 +339,6 @@ function alteraDestino(novoPlaceId) {
 destinationInput.addEventListener("click", () => {
     destinationInput.value = "";
 });
-
-var listaCollapse = new bootstrap.Collapse(listaFavoritos, {
-    toggle: false,
-});
-listaCollapse.show();
 
 var paraOndeCollapse = new bootstrap.Collapse(botaoParaOnde, {
     toggle: false,
@@ -418,7 +440,7 @@ function montaLista() {
             `;
 
             listaFavoritos.innerHTML += listaHtml;
-            listaCollapse.show();
+            // listaCollapse.show();
             escutaClick();
         });
     }
@@ -510,7 +532,10 @@ function habilitaIniciarTrajeto() {
  * Encerrar trajeto
  */
 btnEncerrarTrajeto.addEventListener("click", () => {
-    alteraDestino(placeIdInterrupcao);
+    alteraDestino({
+        lat: latLngInterrupcao.lat(),
+        lng: latLngInterrupcao.lng(),
+    });
     document.querySelector("body").classList.remove("nav-open");
     btnEncerrarTrajeto.disabled = true;
     btnDetalhesRota.classList.remove("hide");
