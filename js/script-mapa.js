@@ -202,6 +202,12 @@ function AutocompleteDirectionsHandler(map) {
     this.setupPlaceChangedListener(destinationAutocomplete, "DEST");
 }
 
+/**
+ *
+ * Função para aplicar a direção após o autocomplete
+ *
+ */
+
 AutocompleteDirectionsHandler.prototype.setupPlaceChangedListener = function (
     autocomplete,
     mode
@@ -209,99 +215,103 @@ AutocompleteDirectionsHandler.prototype.setupPlaceChangedListener = function (
     var me = this;
     autocomplete.bindTo("bounds", this.map);
     autocomplete.addListener("place_changed", function () {
+        // Guarda o objeto place na variável place
         var place = autocomplete.getPlace();
+
+        // Verifica se o usuário escolheu algum endereço na lista de sugestões.
+        // Se não, emite um alerta.
         if (!place.place_id) {
-            window.alert("Please select an option from the dropdown list.");
+            window.alert("Selecione um dos locais na lista");
             return;
         }
         if (mode === "ORIG") {
+            // Aplica o placeId encontrado na variavel global originPlaceId
             originPlaceId = place.place_id;
             me.originPlaceId = place.place_id;
-            originPlaceId = place.place_id;
+            // originPlaceId = place.place_id;
         } else {
+            // Aplica o placeId encontrado na variavel global destinationPlaceId
             destinationPlaceId = place.place_id;
             me.destinationPlaceId = place.place_id;
         }
 
+        // Assim que um destino for escolhido, habilita o botão de favoritar
         favButon.disabled = false;
 
-        // favoritar(place);
+        // Aplica o objeto place na variável global destinationPlace
         destinationPlace = place;
 
-        // console.log(place);
-
+        // Desenha a rota com os dados dentro da variavel me.
         me.route();
     });
 };
 
+/**
+ *
+ * Função para aplicar traçar a rota com base no placeId do destino
+ *
+ */
+
 AutocompleteDirectionsHandler.prototype.route = function () {
+    // Se não tem um placeId de origem e nem de destino, encerra a função.
     if (!originPlaceId || !this.destinationPlaceId) {
         return;
     }
-    var me = this;
-    console.log(me);
-    setRoute = me;
 
+    // Monta os objetos de origem e destino para inserir como parametro da função que desenha a rota
     var lugarDeOrigemPlaceId = { placeId: originPlaceId };
-    var lugarDeOrigemLatLng = {
-        location: {
-            lat: myMap.getCenter().lat(),
-            lng: myMap.getCenter().lng(),
-        },
-    };
+    var lugarDeDestinoPlaceId = { placeId: destinationPlaceId };
+
+    // var lugarDeOrigemLatLng = {
+    //     location: {
+    //         lat: myMap.getCenter().lat(),
+    //         lng: myMap.getCenter().lng(),
+    //     },
+    // };
 
     // alert(this.originPlaceId);
     console.log(this.destinationPlaceId);
 
+    // Desenha a rota com os parametros de origem e destino
     this.directionsService.route(
         {
-            origin: lugarDeOrigemLatLng,
-            destination: { placeId: destinationPlaceId },
+            origin: lugarDeOrigemPlaceId,
+            destination: lugarDeDestinoPlaceId,
             travelMode: "BICYCLING",
         },
         function (response, status) {
             if (status === "OK") {
                 directionsDisplay.setDirections(response);
 
-                console.log(response.routes[0].legs[0].start_location.lat());
-                console.log(response.routes[0].legs[0].start_location.lng());
-
-                console.log(response.routes[0].legs[0].end_location.lat());
-                console.log(response.routes[0].legs[0].end_location.lng());
-                console.log(response.routes[0].legs[0]);
                 console.log(response.routes[0]);
+
+                // Grava os detalhes da rota na variável global
                 detalhesRota = response.routes[0].legs[0];
+
+                // Escreve o endereço de origem no campo de origem
                 inputOri.value = detalhesRota.start_address;
+
+                // Habilita o botão de detalhes da rota
                 btnDetalhesRota.disabled = false;
+
+                // Simula a interrupção da navegação gravando a LatLng na variável global
+                // Para isso, dividimos o numero de steps por 2 e arredodamos para cima
+                // Os steps são as instruções de direção de cada rota.
                 latLngInterrupcao =
                     detalhesRota.steps[
                         Math.floor(detalhesRota.steps.length / 2)
                     ].end_location;
-                preencheDetalhes();
 
-                // favoritar();
+                // Chama a função preencherDetalhes de acordo com a rota que está na variavel detalhesRota
+                preencheDetalhes();
             } else {
-                window.alert("Directions request failed due to " + status);
+                window.alert(
+                    "A requisição para criar a rota falhou devido a: " + status
+                );
             }
         }
     );
 };
-
-function getPlaceId(lat, lng, variavelPlaceId) {
-    service = new google.maps.places.PlacesService(myMap);
-    var request = {
-        location: {
-            lat: lat,
-            lng: lng,
-        },
-        radius: 100,
-        type: ["establishment"],
-    };
-
-    service.nearbySearch(request, (result) => {
-        variavelPlaceId = result[1].place_id;
-    });
-}
 
 /**
  *
@@ -313,12 +323,17 @@ function getPlaceId(lat, lng, variavelPlaceId) {
  */
 function alteraDestino(novasCoordenadas) {
     let novoDestino;
+
+    // Verifica se o parametro é um objeto do tipo {location: {lat: xxx, lng: xxx}}
+    // Se sim, usa o mesmo objeto como parametro.
+    // Caso contrário, usamos o placeId
     if (typeof novasCoordenadas == "object") {
         novoDestino = novasCoordenadas;
     } else {
         novoDestino = { placeId: novasCoordenadas };
     }
-    // let newDestination = latLng ? latLng : { placeId: novoPlaceId };
+
+    // Monta o objeto com os parametros da rota a ser criada
     var parametros = {
         origin: { placeId: originPlaceId },
         destination: novoDestino,
@@ -327,22 +342,36 @@ function alteraDestino(novasCoordenadas) {
 
     var aplicaDirecao = function (response, status) {
         if (status === "OK") {
+            // Desenha a rota em caso de sucesso
             directionsDisplay.setDirections(response);
             console.log(response);
+
+            // Atualiza a variável global com a nova rota
             detalhesRota = response.routes[0].legs[0];
+
+            // Habilita o botão de detalhes da rota
             btnDetalhesRota.disabled = false;
+
+            // Atualiza o texto do campo de origem
             inputOri.value = detalhesRota.start_address;
+
+            // Simula a interrupção da navegação gravando a LatLng na variável global
+            // Para isso, dividimos o numero de steps por 2 e arredodamos para cima
+            // Os steps são as instruções de direção de cada rota.
             latLngInterrupcao =
                 detalhesRota.steps[Math.floor(detalhesRota.steps.length / 2)]
                     .end_location;
+
+            // Chama a função preencherDetalhes de acordo com a rota que está na variavel detalhesRota
             preencheDetalhes();
         } else {
-            window.alert("Directions request failed due to " + status);
+            window.alert(
+                "A requisição para criar a rota falhou devido a: " + status
+            );
         }
     };
 
-    //placeChangedListener.destinationPlaceId = destinationPlaceId;
-
+    // Desenha a rota com os parametros de origem e destino
     directionsService.route(parametros, aplicaDirecao);
 }
 
