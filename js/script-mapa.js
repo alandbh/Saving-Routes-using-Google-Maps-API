@@ -158,8 +158,9 @@ window.initMap = function initMap() {
             type: ["establishment"],
         };
         mapService.nearbySearch(request, (result) => {
-            console.log(result[1]);
-            inputOri.value = result[1].vicinity;
+            console.log(result);
+            // inputOri.value = result[1].vicinity;
+            inputOri.value = "Meu local";
             originPlaceId = result[1].place_id;
         });
     }
@@ -237,12 +238,20 @@ AutocompleteDirectionsHandler.prototype.route = function () {
     console.log(me);
     setRoute = me;
 
+    var lugarDeOrigemPlaceId = { placeId: originPlaceId };
+    var lugarDeOrigemLatLng = {
+        location: {
+            lat: myMap.getCenter().lat(),
+            lng: myMap.getCenter().lng(),
+        },
+    };
+
     // alert(this.originPlaceId);
     console.log(this.destinationPlaceId);
 
     this.directionsService.route(
         {
-            origin: { placeId: originPlaceId },
+            origin: lugarDeOrigemLatLng,
             destination: { placeId: destinationPlaceId },
             travelMode: "BICYCLING",
         },
@@ -258,6 +267,7 @@ AutocompleteDirectionsHandler.prototype.route = function () {
                 console.log(response.routes[0].legs[0]);
                 console.log(response.routes[0]);
                 detalhesRota = response.routes[0].legs[0];
+                inputOri.value = detalhesRota.start_address;
                 btnDetalhesRota.disabled = false;
                 latLngInterrupcao =
                     detalhesRota.steps[
@@ -317,6 +327,7 @@ function alteraDestino(novasCoordenadas) {
             console.log(response);
             detalhesRota = response.routes[0].legs[0];
             btnDetalhesRota.disabled = false;
+            inputOri.value = detalhesRota.start_address;
             latLngInterrupcao =
                 detalhesRota.steps[Math.floor(detalhesRota.steps.length / 2)]
                     .end_location;
