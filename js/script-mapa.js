@@ -100,6 +100,8 @@ var modalFavoritar = document.querySelector(".modal-favoritar");
 
 var modalFavoritarObj = new bootstrap.Modal(modalFavoritar, {});
 
+var montaLista;
+
 var btnSalvarRota = modalFavoritar.querySelector("#btn-salvar");
 var btnDeletaRota = modalFavoritar.querySelectorAll(".btn-deleta");
 
@@ -315,6 +317,35 @@ AutocompleteDirectionsHandler.prototype.route = function () {
 
 /**
  *
+ * Tela inicial
+ * **************************
+ *
+ * Manipula os eventos de clique e collapse para mostrar/esconder os campos...
+ * ... da parte de cima do mapa.
+ */
+
+destinationInput.addEventListener("click", () => {
+    destinationInput.value = "";
+});
+
+var paraOndeCollapse = new bootstrap.Collapse(botaoParaOnde, {
+    toggle: false,
+});
+paraOndeCollapse.show();
+
+var containerLocaisCollapse = new bootstrap.Collapse(containerLocais, {
+    toggle: false,
+});
+containerLocaisCollapse.hide();
+
+botaoParaOnde.querySelector("button").addEventListener("click", () => {
+    containerLocaisCollapse.show();
+    paraOndeCollapse.hide();
+    document.querySelector("body").classList.add("form-open");
+});
+
+/**
+ *
  * Função alteraDestino
  * **************************
  *
@@ -377,100 +408,98 @@ function alteraDestino(novasCoordenadas) {
 
 /**
  *
- * Tela inicial
- */
-
-destinationInput.addEventListener("click", () => {
-    destinationInput.value = "";
-});
-
-var paraOndeCollapse = new bootstrap.Collapse(botaoParaOnde, {
-    toggle: false,
-});
-paraOndeCollapse.show();
-
-var containerLocaisCollapse = new bootstrap.Collapse(containerLocais, {
-    toggle: false,
-});
-containerLocaisCollapse.hide();
-
-botaoParaOnde.querySelector("button").addEventListener("click", () => {
-    containerLocaisCollapse.show();
-    paraOndeCollapse.hide();
-    document.querySelector("body").classList.add("form-open");
-});
-
-/**
+ * Fluxo de favoritar rota
+ * **************************
  *
- *
- * Favoritando a rota
+ * Abre a modal e gravar a rota com o nome personalizado
  */
 
 favButon.addEventListener("click", () => {
     // Abre a modal
     modalFavoritarObj.show();
+
+    // Função que é chamada assim que a modal é aberta
     modalFavoritar.addEventListener("shown.bs.modal", function () {
-        console.log("abre modal");
+        console.log("modal aberta");
+
+        // Coloca o foco no campo nome-rota
         modalFavoritar.querySelector("#nome-rota").focus();
+        // Altera o valor do campo com o endereço que está no objeto detalhes da rota
         modalFavoritar.querySelector("#nome-rota").value =
             detalhesRota.end_address;
     });
 });
 
+/**
+ * Pega o clique do botão Salvar na modal
+ */
 btnSalvarRota.addEventListener("click", () => {
+    // Pega o valor que está no campo de nome da rota
     var novoNome = modalFavoritar.querySelector("#nome-rota").value;
+
+    // adiciona o novo nome no objeto destinationPlace
     destinationPlace.novoNome = novoNome;
 
+    // Chama a função gravar rota
     gravaRota();
-
+    // Fecha a modal
     modalFavoritarObj.hide();
 });
 
+/**
+ * Grava a rota no objeto do usuário logado
+ */
 function gravaRota() {
     console.log(destinationPlace);
 
+    // Salva o novo objeto destinationPlace no array favDir do objeto usuarioLogado
     usuarioLogado.favDir.push(destinationPlace);
+
+    // Grava no localStorage o objeto usuarioLogado já atualizado com o novo endereco
     window.localStorage.usuarioLogado = JSON.stringify(usuarioLogado);
+
+    // Desabilita o botão de favoritar
     favButon.disabled = true;
-    // // place = null;
+
+    // Atualiza a lista de usuarios com o objeto usuarioLogado já atualizado com o novo endereco
     listaUsuarios.forEach((item) => {
         if (item.email === usuarioLogado.email) {
             // console.log(item)
             item.favDir = usuarioLogado.favDir;
         }
     });
+
+    // Atualiza a lista de usuarios no localStorage
     window.localStorage.usuarios = JSON.stringify(listaUsuarios);
 
+    // Chama a função montaLista
     montaLista();
 }
 
-function deletaRota(placeId) {
-    var novoFavDir = usuarioLogado.favDir.filter(
-        (item) => item.place_id !== placeId
-    );
+/**
+ * Função para construir a lista de locais favoritos na modal de favoritos
+ *
+ * A função deve ser chamada assim que for declarada
+ */
 
-    usuarioLogado.favDir = novoFavDir;
-    window.localStorage.usuarioLogado = JSON.stringify(usuarioLogado);
-    // // place = null;
-    listaUsuarios.forEach((item) => {
-        if (item.email === usuarioLogado.email) {
-            // console.log(item)
-            item.favDir = usuarioLogado.favDir;
-        }
-    });
-    window.localStorage.usuarios = JSON.stringify(listaUsuarios);
-
-    montaLista();
-}
-
-function montaLista() {
+(montaLista = function montaLista() {
+    // Esvazia a lista existente
     listaFavoritos.innerHTML = "";
 
+    // Desabilita o botao favoritos
     btnFavoritos.disabled = true;
+
+    // Fecha a modal de favoritar se estiver aberta
     modalFavoritarObj.hide();
+
+    // Verifica se existe pelo menos 1 local favoritado
     if (usuarioLogado.favDir.length > 0) {
+        // Reabilita o botão favoritos
         btnFavoritos.disabled = false;
+
+        // Para cada item na lista de favoritos do usuario logado...
         usuarioLogado.favDir.forEach((fav) => {
+            // ... cria o html a seguir...
             var listaHtml = `
             <li class="list-group-item d-flex justify-content-between" id="${fav.place_id}">
                 <button class="d-flex btn-rota">
@@ -483,40 +512,84 @@ function montaLista() {
             </li>
             `;
 
+            // ... adiciona o html criado no elemento ul na modal...
             listaFavoritos.innerHTML += listaHtml;
-            // listaCollapse.show();
+            // ... chama a função escutaClick para...
+            // ... adicionar eventos de clique nos botoes recem-criados
             escutaClick();
         });
     }
+})();
+
+/**
+ * Função para deletar um item da lista de favoritos na modal de favoritos
+ * Recebe o pladeId como parametro
+ */
+function deletaRota(placeId) {
+    // Cria um novo array excluindo o local com o placeId informado
+    var novoFavDir = usuarioLogado.favDir.filter(
+        (item) => item.place_id !== placeId
+    );
+
+    // Aplica o novo array no objeto usuarioLogado
+    usuarioLogado.favDir = novoFavDir;
+
+    // Grava o nono usuario logado no localStorage
+    window.localStorage.usuarioLogado = JSON.stringify(usuarioLogado);
+
+    // Atualiza a lista de usuarios com o usuarioLogado já sem o item excluido
+    listaUsuarios.forEach((item) => {
+        if (item.email === usuarioLogado.email) {
+            // console.log(item)
+            item.favDir = usuarioLogado.favDir;
+        }
+    });
+
+    // Atualiza a lista de usuarios no storage
+    window.localStorage.usuarios = JSON.stringify(listaUsuarios);
+
+    // Monta a lista novamente com base na nova lista de favoritos
+    montaLista();
+
+    // Fecha a modal caso a lista de favoritos esteja vazia
+    if (novoFavDir.length === 0) {
+        modalFavoritosObj.hide();
+    }
 }
 
-montaLista();
-
+/**
+ * Função escutar os eventos de clique dos botões criados na modal de favoritos
+ * São os botoes de deletar e de aplicar a rota
+ */
 function escutaClick() {
     var itensListaFavoritos = document.querySelectorAll("#listaLocais li");
     btnDeletaRota = document.querySelectorAll(".btn-deleta");
 
-    if (itensListaFavoritos) {
-        itensListaFavoritos.forEach((item) => {
-            item.querySelector("button").addEventListener("click", (evento) => {
-                // console.log(item.id)
-
+    // Adiciona o evento de clique em cada botao dentro da lista de favoritos
+    itensListaFavoritos.forEach((item) => {
+        item.querySelector("button.btn-rota").addEventListener(
+            "click",
+            (evento) => {
+                // Altera o destino da rota com base no id do <li>
                 alteraDestino(item.id);
+                // Fecha a modal
                 modalFavoritosObj.hide();
-            });
-        });
-    }
+            }
+        );
+    });
 
+    // Para cada botao de deletar rota...
     btnDeletaRota.forEach((btn) => {
+        // Escucar o evento de clique
         btn.addEventListener("click", () => {
+            // Pega o id do elemento pai, no caso o <li>
             let placeIdToRemove = btn.parentNode.id;
-            // console.log(placeIdToRemove);
+
+            //Chama a funçao deletaRota passando o ID acima
             deletaRota(placeIdToRemove);
         });
     });
 }
-
-escutaClick();
 
 // var listaFavoritosId = document.getElementById('listaLocais')
 
