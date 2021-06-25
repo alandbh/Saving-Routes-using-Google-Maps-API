@@ -591,9 +591,20 @@ function escutaClick() {
     });
 }
 
-// var listaFavoritosId = document.getElementById('listaLocais')
+/**
+ *
+ * Fluxo de mostrar os detalhes da rota atual
+ * **************************
+ *
+ * Abre a modal e atualiza os detalhes como Duração, Distãncia e Calorias
+ */
 
+/**
+ * Função para preencher os detalhes
+ */
 function preencheDetalhes() {
+    // Seleciona os elementos dentro da lista e atualiza o texto...
+    // ...com base nos dados gravados na variavel detalhesRota
     var listaDetalhes = document.querySelector("#listaDetalhes");
     listaDetalhes.querySelector("#duracao b").textContent =
         detalhesRota.duration.text;
@@ -602,43 +613,66 @@ function preencheDetalhes() {
     listaDetalhes.querySelector("#calorias b").textContent =
         calculaCalorias() + " Kcal";
 
+    // Habilitar o botao e as funções para iniciar o trajeto
     habilitaIniciarTrajeto();
 }
 
+/**
+ * Função para calcular as calorias
+ */
 function calculaCalorias() {
-    //0,049 x (Seu peso x 2,2) x Total de minutos de prática = Calorias queimadas.
+    // Formula:
+    // 0,049 x (Seu peso x 2,2) x Total de minutos de prática = Calorias queimadas.
+
+    // Constantes da fórmula
     const multiplicadorGeral = 0.049;
     const multiplicadorPeso = 2.2;
+
+    // Pega o peso do usuario logado ou aplica 60 como padrão
     let peso = usuarioLogado.peso || 60;
+
+    // Pega a duração em segundos e divide por 60 para transformar em minutos
     let duracao = detalhesRota.duration.value / 60;
 
+    // Retorna o valor do cálculo arredondado
     return Math.round(peso * multiplicadorPeso * multiplicadorGeral * duracao);
 }
 
 /**
  *
- * Iniciar trajeto
+ * Fluxo de iniciar e encerrar trajeto
+ * **************************
+ *
+ * Atualiza estilos do mapa e da interface como um todo
  */
 
 function habilitaIniciarTrajeto() {
+    // Espera 2 segundos para habilitar o botão
     setTimeout(() => {
         btnIniciarTrajeto.disabled = false;
     }, 2000);
 
+    // Assim que clicar no botão iniciar trajeto...
     btnIniciarTrajeto.addEventListener("click", () => {
+        // Atualiza as classes para aplicar o estilo do mapa em tela cheia
         document.querySelector("body").classList.add("nav-open");
         btnDetalhesRota.classList.add("hide");
         btnFavoritos.classList.add("hide");
 
+        // Re-centraliza o mapa no ponto inicial da rota
         myMap.setCenter({
             lat: detalhesRota.start_location.lat(),
             lng: detalhesRota.start_location.lng(),
         });
 
+        // Aplica o zoom mais alto possível
         myMap.setZoom(22);
 
+        // Espera 1 segundo para...
         setTimeout(() => {
+            // ...desabilitar o botao iniciar trajeto e...
             btnIniciarTrajeto.disabled = true;
+            // ... habilitar o botao encerrar trajeto
             btnEncerrarTrajeto.disabled = false;
         }, 1000);
     });
@@ -649,10 +683,13 @@ function habilitaIniciarTrajeto() {
  * Encerrar trajeto
  */
 btnEncerrarTrajeto.addEventListener("click", () => {
+    // Altera o destino com base nas coordenadas gravadas na variavel latLngInterrupcao
     alteraDestino({
         lat: latLngInterrupcao.lat(),
         lng: latLngInterrupcao.lng(),
     });
+
+    // Atualiza as classes para retirar o estilo do mapa em tela cheia
     document.querySelector("body").classList.remove("nav-open");
     btnEncerrarTrajeto.disabled = true;
     btnDetalhesRota.classList.remove("hide");
