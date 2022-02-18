@@ -1,7 +1,9 @@
 window.usuarios = [];
 var usuario = {};
 var formValid = false;
-var listaUsuarios = window.localStorage.usuarios ? JSON.parse(window.localStorage.usuarios) : [];
+var listaUsuarios = window.localStorage.usuarios
+    ? JSON.parse(window.localStorage.usuarios)
+    : [];
 
 window.addEventListener("load", function () {
     let nome = document.getElementById("nameRegistro");
@@ -17,9 +19,8 @@ window.addEventListener("load", function () {
     salvar.disabled = true;
 
     salvar.addEventListener("click", function () {
-
         usuario.nome = nome.value;
-        usuario.data = date.value;
+        // usuario.data = date.value;
         // usuario.tel = tel.value;
         usuario.email = ema.value;
         usuario.senha = password.value;
@@ -28,17 +29,20 @@ window.addEventListener("load", function () {
 
         if (validarCampos()) {
             if (usuarioJaExiste()) {
-                alert('Este email já está sendo usado');
+                alert("Este email já está sendo usado");
                 return;
             }
 
-            if (isNaN(campoPeso.value) ) {
-                alert('O peso parece estar incorreto.');
+            if (isNaN(campoPeso.value)) {
+                alert("O peso parece estar incorreto.");
                 return;
             }
             listaUsuarios.push(usuario);
-            window.localStorage.setItem('usuarios', JSON.stringify(listaUsuarios));
-            window.open("/index.html","_self")
+            window.localStorage.setItem(
+                "usuarios",
+                JSON.stringify(listaUsuarios)
+            );
+            window.open("/index.html", "_self");
         } else {
             alert("Preencha todos os campos");
         }
@@ -50,7 +54,7 @@ window.addEventListener("load", function () {
         // window.localStorage.setItem("senha", JSON.stringify(input5));
     });
 
-    formulario.onchange = (evento) => validarCampos(evento);
+    formulario.onkeyup = (evento) => validarCampos(evento);
 
     function validarCampos(evento) {
         if (
@@ -71,12 +75,10 @@ window.addEventListener("load", function () {
 
     function usuarioJaExiste() {
         if (listaUsuarios && listaUsuarios.length > 0) {
-            return Boolean(listaUsuarios.find((usuario)=> usuario.email === ema.value)    )
+            return Boolean(
+                listaUsuarios.find((usuario) => usuario.email === ema.value)
+            );
         }
-        return false
+        return false;
     }
 });
-
-// function alertLogin() {
-//     alert("Cadastro feito com sucesso!");
-// }
