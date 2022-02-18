@@ -136,12 +136,10 @@ window.initMap = function initMap() {
 
     // Centraliza o mapa na localização atual do aparelho
     // Para isso, pega as coordenadas atuais do navegador
-    (async function getLocation() {
-        await navigator.geolocation.getCurrentPosition((position) =>
-            // chama a função para centralizar o mapa, passando adiante as coordenadas
-            centralizaMapa(position.coords)
-        );
-    })();
+    navigator.geolocation.getCurrentPosition((position) =>
+        // chama a função para centralizar o mapa, passando adiante as coordenadas
+        centralizaMapa(position.coords)
+    );
 
     // Função para centralizar o mapa
     function centralizaMapa(position) {
@@ -161,7 +159,7 @@ window.initMap = function initMap() {
             type: ["establishment"],
         };
         mapService.nearbySearch(request, (result) => {
-            console.log(result);
+            // console.log(result);
             // inputOri.value = result[1].vicinity;
 
             // Coloca a string "Meu local" no campo de origem
