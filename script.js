@@ -37,6 +37,11 @@ window.addEventListener("load", function () {
                 alert("O peso parece estar incorreto.");
                 return;
             }
+
+            if (campoPeso.value < 20) {
+                alert("O peso deve estar acima de 20 Kg");
+                return;
+            }
             listaUsuarios.push(usuario);
             window.localStorage.setItem(
                 "usuarios",
